@@ -7,18 +7,12 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as echarts from 'echarts';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 const router = useRouter();
-const route = useRoute();
 import { chartData } from '/@/router/mds';
-const handleGoRouteMenus = () => {
-    router.push({
-        path: '/study'
-    })
-}
 let chart = ref();
-const computedDataLabel = (data) => {
-    data.map((item) => {
+const computedDataLabel = (data:any) => {
+    data.map((item:any) => {
         if (item.children && item.children.length){
             computedDataLabel(item.children)
         }
@@ -42,7 +36,7 @@ const initChart = () => {
         ]
     };
     myChart.setOption(option);
-    myChart.on('click',(e)=>{
+    myChart.on('click',(_e)=>{
         router.push({
             path:'/study/'+encodeURI('CSS_基础_剧中')
         })

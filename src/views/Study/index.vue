@@ -20,12 +20,13 @@ import { useRouter, useRoute } from 'vue-router';
 import { ref ,onMounted} from 'vue';
 const router = useRouter();
 const route = useRoute();
+import type { ItemType } from 'ant-design-vue';
 import { Study } from '/@/router/mds';
-let openKeys = ref([]);
-let selectedKeys = ref([]);
-let items: any = ref([]);
+const openKeys = ref<string[]>([]);
+const selectedKeys = ref<string[]>([]);
+let items = ref<ItemType[]>([]);
 items.value = Study
-const handleClick = (e) => {
+const handleClick = (e:any) => {
     router.push({
         path:'/study/'+encodeURI(e.key)
     })

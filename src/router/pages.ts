@@ -17,7 +17,7 @@ computedDataLabel(Study);
 const Home = {
     path: '/home',
     name: 'home',
-    component: () => import('/@/views/Home/index.vue'),
+    component: () => import('../views/Home/index.vue'),
     meta: {
         title: '首页',
         keepAlive: false,
