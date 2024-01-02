@@ -44,7 +44,7 @@ const initChart = () => {
     myChart.setOption(option);
     myChart.on('click',(e)=>{
         router.push({
-            path:'/study/md'
+            path:'/study/'+encodeURI('CSS_基础_剧中')
         })
     })
 }

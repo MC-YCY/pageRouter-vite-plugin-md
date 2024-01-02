@@ -17,33 +17,36 @@
 
 <script lang="ts" setup>
 import { useRouter, useRoute } from 'vue-router';
-import { ref } from 'vue';
+import { ref ,onMounted} from 'vue';
 const router = useRouter();
 const route = useRoute();
 import { Study } from '/@/router/mds';
-// const goChildren = () => {
-//     router.push({
-//         path: '/menus/children'
-//     });
-// }
-let computedDataLabel_key = 0;
-const computedDataLabel = (data) => {
-    data.map((item) => {
-        item['key'] = item.name + computedDataLabel_key;
-        item['label'] = item.name
-        item['title'] = item.name
-        if (item.children && item.children.length) computedDataLabel(item.children)
-    })
-    computedDataLabel_key++;
-}
-computedDataLabel(Study);
 let openKeys = ref([]);
 let selectedKeys = ref([]);
 let items: any = ref([]);
 items.value = Study
 const handleClick = (e) => {
-    console.log(e);
+    router.push({
+        path:'/study/'+encodeURI(e.key)
+    })
 }
+
+onMounted(()=>{
+    let path = decodeURI(route.path).split('/study/')[1]
+    let paths = path.split('_');
+    let openValue:string = '';
+    paths.map((v,k)=>{
+        if(k<paths.length-1){
+            if(openValue){
+                openValue = openValue+'_'+v;
+            }else{
+                openValue+=v;
+            }
+            openKeys.value.push(openValue)
+        }
+    })
+    selectedKeys.value.push(path)
+})
 </script>
 
 <style lang="less" scoped>
