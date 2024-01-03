@@ -1,6 +1,17 @@
 <template>
     <div class="home">
-        <a-button class="home_back" @click="handleGoBack">返回</a-button>
+        <div class="home_tip">点击扇形下钻以及跳转页面</div>
+        <!-- <a-button class="home_back" @click="handleGoBack">返回</a-button> -->
+        <div class="home_path">
+            <a-breadcrumb>
+                <a-breadcrumb-item v-for="item, key in pathLog">
+                    <span class="home_path_item" @click="handleClickPathItem(item, key)">
+                        {{ item.path }}
+                    </span>
+                </a-breadcrumb-item>
+            </a-breadcrumb>
+            <a-button type="link" :size="'small'" @click="handleGoBack" style="margin-left:10px;">Back</a-button>
+        </div>
         <div class="chart" ref="chart"></div>
     </div>
 </template>
@@ -46,51 +57,75 @@ const initChart = () => {
         data
     });
     let option = {
-        tooltip: {
-            trigger: 'item',
-            triggerOn: 'mousemove'
-        },
         color: [
+            '#a5f1e9',
+            '#7fe9de',
             '#80bcbd',
-            '#2d3250',
-            '#43766c',
-            '#525ceb',
-            '#dc84f3',
-            '#ffe7c1',
-            '#176b87',
-            '#4f6f52',
-            '#a1eebd',
-            '#bf3131',
-            '#52d3d8',
-            '#ff9800',
-            '#5d3587',
-            '#65b741',
+            '#aad9bb',
+            '#d5f0c1',
+            '#f9f7c9',
+            '#756ab6',
+            '#ac87c5',
+            '#e0aed0',
+            '#ffe5e5',
+            '#7bd3ea',
             '#ff90bc',
-            '#1b4242',
-            '#7ed7c1',
-            '#9ade7b',
-            '#7071e8',
-            '#0766ad',
+            '#8acdd7',
             '#ffc5c5',
-            '#af2655',
-            '#83a2ff',
-            '#ec8f5e',
-            '#2b3499',
-            '#39a7ff',
-            '#ff6c22',
-            '#005b41',
-            '#b0578d',
-            '#6499e9'
+            '#ffebd8',
+            '#ff8080',
+            '#00a9ff',
+            '#89cff3',
+            '#a0e9ff',
+            '#cdf5fd',
+            '#45ffca',
+            '#feffac',
+            '#ffb6d9',
+            '#d67bff',
+            '#ffacac',
+            '#ffbfa9',
+            '#ffebb4',
+            '#fbffb1',
+            '#b9f3e4',
+            '#ea8fea',
+            '#ffaacf',
+            '#f6e6c2',
+            '#cde990',
+            '#aacb73',
+            '#eac7c7',
+            '#f8f988'
         ],
         series: [
             {
                 type: 'pie',
                 id: 'pie',
+
+                label:{
+                    fontSize:14,
+                    fontWeight:600,
+                    color:"#888",
+                },
+                labelLine:{
+                    length:'2%',
+                    length2:'1%',
+                },
+                emphasis:{
+                    itemStyle:{
+                        color:'inherit',
+                        shadowBlur:10,
+                        shadowColor:'#1677ff'
+                    },
+                },
                 data: data
             }
         ]
     };
     myChart.setOption(option);
+    const resizeObserve = new ResizeObserver(() => {
+        myChart.resize();
+    });
+    resizeObserve.observe(chart.value);
+
 
     myChart.on('click', (event: any) => {
         const { children, name, computedDataLabel_k, key } = event.data;
@@ -143,16 +178,70 @@ const handleGoBack = () => {
         ]
     })
 }
+const handleClickPathItem = (item: any, key: number) => {
+    let last = pathLog.value[pathLog.value.length - 1];
+    if (item.path === 'root') {
+        pathLog.value.length = 1;
+    };
+    if (pathLog.value.length > 1 && item.computedDataLabel_k == last.computedDataLabel_k) return;
+    pathLog.value.splice(key + 1, Infinity);
+    let myChart = echarts.getInstanceByDom(chart.value);
+    myChart?.setOption({
+        series: [
+            {
+                id: 'pie',
+                data: item.data
+            }
+        ]
+    })
+}
 onMounted(() => {
     initChart();
 })
 </script>
 
 <style lang="less" scoped>
+@keyframes hideTip {
+    0%{
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+    }
+}
 .home {
     width: 100%;
     height: auto;
     position: relative;
+    .home_tip{
+        position: absolute;
+        font-size: 14px;
+        font-weight: 600;
+        color: #888;
+        top: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: hideTip  ease-in 3s forwards;
+    }
+    .home_path {
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .home_path_item {
+            font-size: 14px;
+            cursor: pointer;
+            transition: all .3s linear;
+            padding: 0px 2px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .home_path_item:hover {
+            background-color: #f0f0f0;
+        }
+    }
 
     .home_back {
         position: absolute;
@@ -166,6 +255,5 @@ onMounted(() => {
 
 .chart {
     width: 100vw;
-    height: 100vh;
-}
-</style>
+    height: calc(100vh - 50px);
+}</style>
