@@ -145,6 +145,9 @@ const initChart = () => {
     });
     resizeObserve.observe(chart.value);
 
+    chartEventMethods(myChart)
+}
+const chartEventMethods = (myChart:any) =>{
     let isRoot = false;
     myChart.getZr().on('click', (e: any) => {
         const { fill, text } = e.target.style;
@@ -161,12 +164,12 @@ const initChart = () => {
             isRoot = true;
         }
     })
-
     myChart.on('click', (event: any) => {
         if (isRoot) {
             isRoot = false;
             return
         };
+        
         const { children, name, computedDataLabel_k, key } = event.data;
         if (pathLog.value.length === 1) {
             isClickType.value = name;
@@ -249,7 +252,7 @@ router.beforeEach((_to, form) => {
             let myChart_ = echarts.init(chart.value);
             option.series[0].data = pathLog.value[pathLog.value.length - 1].data;
             myChart_?.setOption(option);
-            
+            chartEventMethods(myChart_);
         })
     }
 })
