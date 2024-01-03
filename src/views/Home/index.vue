@@ -58,10 +58,10 @@ const initChart = () => {
         computedDataLabel_k: 'root',
         data
     });
-    data.map((item:any) => {
-        item['name'] = '🙂'+item.name;
+    data.map((item: any) => {
+        item['name'] = '🙂' + item.name;
         item['label'] = {
-            formatter: (v:any) => {
+            formatter: (v: any) => {
                 return `{text|${v.name}}`
             },
             rich: {
@@ -131,6 +131,9 @@ const initChart = () => {
                         shadowBlur: 10,
                         shadowColor: '#1677ff'
                     },
+                    label: {
+                        show: true
+                    }
                 },
                 data: data
             }
@@ -148,12 +151,12 @@ const initChart = () => {
         if (fill == '#666') {
             let routerPath = '';
             if (text == '🙂面试') {
-                routerPath='/question'
+                routerPath = '/question'
             } else if (text == '🙂知识') {
-                routerPath= '/study'
+                routerPath = '/study'
             }
             router.push({
-                path:routerPath
+                path: routerPath
             })
             isRoot = true;
         }
@@ -234,6 +237,22 @@ const handleClickPathItem = (item: any, key: number) => {
 onMounted(() => {
     initChart();
 })
+router.beforeEach((_to, form) => {
+    if (form.path.includes('study') || form.path.includes('question')) {
+        let myChart = echarts.getInstanceByDom(chart.value);
+        let option: any = JSON.parse(JSON.stringify(myChart?.getOption()));
+        myChart?.dispose();
+        requestAnimationFrame(() => {
+            chart.value.removeAttribute('style')
+            chart.value.removeAttribute('_echarts_instance_')
+            chart.value.removeAttribute('aria-label')
+            let myChart_ = echarts.init(chart.value);
+            option.series[0].data = pathLog.value[pathLog.value.length - 1].data;
+            myChart_?.setOption(option);
+            
+        })
+    }
+})
 </script>
 
 <style lang="less" scoped>
@@ -263,7 +282,8 @@ onMounted(() => {
         animation: hideTip ease-in 3s forwards;
         display: flex;
         flex-wrap: wrap;
-        nav{
+
+        nav {
             width: 100%;
             justify-content: center;
             text-align: center;
@@ -303,4 +323,5 @@ onMounted(() => {
 .chart {
     width: 100vw;
     height: calc(100vh - 50px);
-}</style>
+}
+</style>
