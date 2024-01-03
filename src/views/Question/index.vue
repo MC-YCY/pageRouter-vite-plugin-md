@@ -32,21 +32,29 @@ const handleClick = (e:any) => {
     })
 }
 
-onMounted(()=>{
+const menuToRouterPathStyle = () => {
+    selectedKeys.value.length = 0;
+    openKeys.value.length = 0;
     let path = decodeURI(route.path).split('/question/')[1]
     let paths = path.split('_');
-    let openValue:string = '';
-    paths.map((v,k)=>{
-        if(k<paths.length-1){
-            if(openValue){
-                openValue = openValue+'_'+v;
-            }else{
-                openValue+=v;
+    let openValue: string = '';
+    paths.map((v, k) => {
+        if (k < paths.length - 1) {
+            if (openValue) {
+                openValue = openValue + '_' + v;
+            } else {
+                openValue += v;
             }
             openKeys.value.push(openValue)
         }
     })
     selectedKeys.value.push(path)
+}
+onMounted(() => {
+    menuToRouterPathStyle();
+})
+router.afterEach(()=>{
+    menuToRouterPathStyle();
 })
 </script>
 

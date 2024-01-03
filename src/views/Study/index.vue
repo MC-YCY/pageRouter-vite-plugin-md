@@ -17,7 +17,7 @@
 
 <script lang="ts" setup>
 import { useRouter, useRoute } from 'vue-router';
-import { ref ,onMounted} from 'vue';
+import { ref, onMounted } from 'vue';
 const router = useRouter();
 const route = useRoute();
 import type { ItemType } from 'ant-design-vue';
@@ -26,27 +26,35 @@ const openKeys = ref<string[]>([]);
 const selectedKeys = ref<string[]>([]);
 let items = ref<ItemType[]>([]);
 items.value = Study
-const handleClick = (e:any) => {
+const handleClick = (e: any) => {
     router.push({
-        path:'/study/'+encodeURI(e.key)
+        path: '/study/' + encodeURI(e.key)
     })
 }
 
-onMounted(()=>{
+const menuToRouterPathStyle = () => {
+    selectedKeys.value.length = 0;
+    openKeys.value.length = 0;
     let path = decodeURI(route.path).split('/study/')[1]
     let paths = path.split('_');
-    let openValue:string = '';
-    paths.map((v,k)=>{
-        if(k<paths.length-1){
-            if(openValue){
-                openValue = openValue+'_'+v;
-            }else{
-                openValue+=v;
+    let openValue: string = '';
+    paths.map((v, k) => {
+        if (k < paths.length - 1) {
+            if (openValue) {
+                openValue = openValue + '_' + v;
+            } else {
+                openValue += v;
             }
             openKeys.value.push(openValue)
         }
     })
     selectedKeys.value.push(path)
+}
+onMounted(() => {
+    menuToRouterPathStyle();
+})
+router.afterEach(()=>{
+    menuToRouterPathStyle();
 })
 </script>
 

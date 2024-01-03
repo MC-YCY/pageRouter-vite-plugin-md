@@ -2,6 +2,7 @@
   "compilerOptions": {
     "types":[
       "node",
+      "vite/client"
     ],
     "paths": { "/@/*":["./src/*"] },
     "target": "ES2020",
