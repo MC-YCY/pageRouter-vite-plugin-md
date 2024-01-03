@@ -35,25 +35,32 @@ const handleClick = (e: any) => {
 const menuToRouterPathStyle = () => {
     selectedKeys.value.length = 0;
     openKeys.value.length = 0;
-    let path = decodeURI(route.path).split('/study/')[1]
-    let paths = path.split('_');
-    let openValue: string = '';
-    paths.map((v, k) => {
-        if (k < paths.length - 1) {
-            if (openValue) {
-                openValue = openValue + '_' + v;
-            } else {
-                openValue += v;
+    try {
+        let path = decodeURI(route.path).split('/study/')[1]
+        let paths = path.split('_');
+        let openValue: string = '';
+        paths.map((v, k) => {
+            if (k < paths.length - 1) {
+                if (openValue) {
+                    openValue = openValue + '_' + v;
+                } else {
+                    openValue += v;
+                }
+                openKeys.value.push(openValue)
             }
-            openKeys.value.push(openValue)
-        }
-    })
-    selectedKeys.value.push(path)
+        })
+        selectedKeys.value.push(path)
+    } catch {
+        console.error('根据root饼图进入无法设置默认选中菜单')
+    }
 }
 onMounted(() => {
     menuToRouterPathStyle();
 })
-router.afterEach(()=>{
+router.afterEach((to,_form,_next) => {
+    if(to.path=='/home'){
+        return;
+    }
     menuToRouterPathStyle();
 })
 </script>

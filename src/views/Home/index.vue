@@ -1,7 +1,9 @@
 <template>
     <div class="home">
-        <div class="home_tip">点击扇形下钻以及跳转页面</div>
-        <!-- <a-button class="home_back" @click="handleGoBack">返回</a-button> -->
+        <div class="home_tip">
+            <nav>点击扇形下钻以及跳转页面</nav>
+            <nav>点击root层级的🙂label可直接进入</nav>
+        </div>
         <div class="home_path">
             <a-breadcrumb>
                 <a-breadcrumb-item v-for="item, key in pathLog">
@@ -56,6 +58,21 @@ const initChart = () => {
         computedDataLabel_k: 'root',
         data
     });
+    data.map((item:any) => {
+        item['name'] = '🙂'+item.name;
+        item['label'] = {
+            formatter: (v:any) => {
+                return `{text|${v.name}}`
+            },
+            rich: {
+                text: {
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#666",      //颜色区分用于 getZr的事件判断
+                },
+            }
+        }
+    })
     let option = {
         color: [
             '#a5f1e9',
@@ -99,21 +116,20 @@ const initChart = () => {
             {
                 type: 'pie',
                 id: 'pie',
-
-                label:{
-                    fontSize:14,
-                    fontWeight:600,
-                    color:"#888",
+                label: {
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#888",
                 },
-                labelLine:{
-                    length:'2%',
-                    length2:'1%',
+                labelLine: {
+                    length: '2%',
+                    length2: '1%',
                 },
-                emphasis:{
-                    itemStyle:{
-                        color:'inherit',
-                        shadowBlur:10,
-                        shadowColor:'#1677ff'
+                emphasis: {
+                    itemStyle: {
+                        color: 'inherit',
+                        shadowBlur: 10,
+                        shadowColor: '#1677ff'
                     },
                 },
                 data: data
@@ -126,8 +142,28 @@ const initChart = () => {
     });
     resizeObserve.observe(chart.value);
 
+    let isRoot = false;
+    myChart.getZr().on('click', (e: any) => {
+        const { fill, text } = e.target.style;
+        if (fill == '#666') {
+            let routerPath = '';
+            if (text == '🙂面试') {
+                routerPath='/question'
+            } else if (text == '🙂知识') {
+                routerPath= '/study'
+            }
+            router.push({
+                path:routerPath
+            })
+            isRoot = true;
+        }
+    })
 
     myChart.on('click', (event: any) => {
+        if (isRoot) {
+            isRoot = false;
+            return
+        };
         const { children, name, computedDataLabel_k, key } = event.data;
         if (pathLog.value.length === 1) {
             isClickType.value = name;
@@ -155,8 +191,8 @@ const initChart = () => {
             return;
         }
         let routerPath = '/study/' + encodeURI(key);
-        if (isClickType.value === '知识') routerPath = '/study/' + encodeURI(key);
-        else if (isClickType.value === '面试') routerPath = '/question/' + encodeURI(key);
+        if (isClickType.value === '🙂知识') routerPath = '/study/' + encodeURI(key);
+        else if (isClickType.value === '🙂面试') routerPath = '/question/' + encodeURI(key);
         router.push({
             path: routerPath
         })
@@ -202,18 +238,21 @@ onMounted(() => {
 
 <style lang="less" scoped>
 @keyframes hideTip {
-    0%{
+    0% {
         opacity: 1;
     }
-    100%{
+
+    100% {
         opacity: 0;
     }
 }
+
 .home {
     width: 100%;
     height: auto;
     position: relative;
-    .home_tip{
+
+    .home_tip {
         position: absolute;
         font-size: 14px;
         font-weight: 600;
@@ -221,8 +260,16 @@ onMounted(() => {
         top: 50px;
         left: 50%;
         transform: translateX(-50%);
-        animation: hideTip  ease-in 3s forwards;
+        animation: hideTip ease-in 3s forwards;
+        display: flex;
+        flex-wrap: wrap;
+        nav{
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+        }
     }
+
     .home_path {
         height: 50px;
         display: flex;

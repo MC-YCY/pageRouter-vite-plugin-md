@@ -17,43 +17,50 @@
 
 <script lang="ts" setup>
 import { useRouter, useRoute } from 'vue-router';
-import { ref ,onMounted} from 'vue';
+import { ref, onMounted } from 'vue';
 const router = useRouter();
 const route = useRoute();
 import { Question } from '/@/router/mds';
 const openKeys = ref<string[]>([]);
 const selectedKeys = ref<string[]>([]);
-let items:any = ref([]);
+let items: any = ref([]);
 items.value = Question;
 
-const handleClick = (e:any) => {
+const handleClick = (e: any) => {
     router.push({
-        path:'/question/'+encodeURI(e.key)
+        path: '/question/' + encodeURI(e.key)
     })
 }
 
 const menuToRouterPathStyle = () => {
     selectedKeys.value.length = 0;
     openKeys.value.length = 0;
-    let path = decodeURI(route.path).split('/question/')[1]
-    let paths = path.split('_');
-    let openValue: string = '';
-    paths.map((v, k) => {
-        if (k < paths.length - 1) {
-            if (openValue) {
-                openValue = openValue + '_' + v;
-            } else {
-                openValue += v;
+    try {
+        let path = decodeURI(route.path).split('/question/')[1];
+        let paths = path.split('_');
+        let openValue: string = '';
+        paths.map((v, k) => {
+            if (k < paths.length - 1) {
+                if (openValue) {
+                    openValue = openValue + '_' + v;
+                } else {
+                    openValue += v;
+                }
+                openKeys.value.push(openValue)
             }
-            openKeys.value.push(openValue)
-        }
-    })
-    selectedKeys.value.push(path)
+        })
+        selectedKeys.value.push(path)
+    } catch {
+        console.error('根据root饼图进入无法设置默认选中菜单')
+    }
 }
 onMounted(() => {
     menuToRouterPathStyle();
 })
-router.afterEach(()=>{
+router.afterEach((to, _form, _next) => {
+    if (to.path == '/home') {
+        return;
+    }
     menuToRouterPathStyle();
 })
 </script>
