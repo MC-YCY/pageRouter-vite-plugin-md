@@ -28,6 +28,7 @@ const computedDataLabel = (data: any) => {
 }
 computedDataLabel(chartData);
 let pathLog: any = ref([]);
+let isClickType = ref();
 const computedChartData = (_d: any) => {
     return _d.map((v: any) => {
         return {
@@ -61,7 +62,9 @@ const initChart = () => {
 
     myChart.on('click', (event: any) => {
         const { children, name, computedDataLabel_k, key } = event.data;
-
+        if(pathLog.value.length === 1){
+            isClickType.value = name;
+        }
         if (children && children.length) {
             let cdata = computedChartData(children);
             let pathLog_computedDataLabel_ks = pathLog.value.map((v: any) => {
@@ -84,8 +87,11 @@ const initChart = () => {
             })
             return;
         }
+        let routerPath = '/study/' + encodeURI(key);
+        if(isClickType.value === '知识') routerPath = '/study/' + encodeURI(key);
+        else if(isClickType.value === '面试') routerPath = '/question/' + encodeURI(key);
         router.push({
-            path: '/study/' + encodeURI(key)
+            path: routerPath
         })
     })
 }

@@ -1136,68 +1136,70 @@ computedDataLabel(_Study);
 export const Study = _Study
 
 
-export const Question = [
+export const _Question = [
     {
         name: '互联网公司大盘点',
-        routerKey: '互联网公司大盘点'
+        routerKey: '面试题_互联网公司大盘点',
     },
     {
         name: '前端学习路线',
-        routerKey: '前端学习路线'
+        routerKey: '面试题_前端学习路线'
     },
     {
         name: '前端面试准备',
-        routerKey: '前端面试准备'
+        routerKey: '面试题_前端面试准备'
     },
     {
         name: '前端面试题之HTML篇',
-        routerKey: '前端面试题之HTML篇'
+        routerKey: '面试题_前端面试题之HTML篇'
     },
     {
         name: '前端面试题之CSS篇',
-        routerKey: '前端面试题之CSS篇'
+        routerKey: '面试题_前端面试题之CSS篇'
     },
     {
         name: '前端面试题之JavaScript篇',
-        routerKey: '前端面试题之JavaScript篇'
+        routerKey: '面试题_前端面试题之JavaScript篇'
     },
     {
         name: '前端面试题之Vue篇',
-        routerKey: '前端面试题之Vue篇'
+        routerKey: '面试题_前端面试题之Vue篇'
     },
     {
         name: '前端面试题之React篇',
-        routerKey: '前端面试题之React篇'
+        routerKey: '面试题_前端面试题之React篇'
     },
     {
         name: '前端面试题之性能优化篇',
-        routerKey: '前端面试题之性能优化篇'
+        routerKey: '面试题_前端面试题之性能优化篇'
     },
     {
         name: '前端面试题之前端工程化篇',
-        routerKey: '前端面试题之前端工程化篇'
+        routerKey: '面试题_前端面试题之前端工程化篇'
     },
     {
         name: '前端面试题之计算机网络篇',
-        routerKey: '前端面试题之计算机网络篇'
+        routerKey: '面试题_前端面试题之计算机网络篇'
     },
     {
         name: '前端面试题之浏览器原理篇',
-        routerKey: '前端面试题之浏览器原理篇'
+        routerKey: '面试题_前端面试题之浏览器原理篇'
     },
     {
         name: '前端面试题之手写代码篇',
-        routerKey: '前端面试题之手写代码篇'
+        routerKey: '面试题_前端面试题之手写代码篇'
     },
     {
         name: '前端面试题之代码输出篇',
-        routerKey: '前端面试题之代码输出篇'
+        routerKey: '面试题_前端面试题之代码输出篇'
     },
     {
         name: 'LeetCode 高频题目分类列表',
-        routerKey: 'LeetCode'
+        routerKey: '面试题_LeetCode'
     },
 ]
+computedDataLabel(_Question);
+export const Question = _Question;
 export const chartData = [
     {
         name: '知识',
