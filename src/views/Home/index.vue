@@ -1,6 +1,6 @@
 <template>
-    <div @click="handleGoBack">返回</div>
     <div class="home">
+        <a-button class="home_back" @click="handleGoBack">返回</a-button>
         <div class="chart" ref="chart"></div>
     </div>
 </template>
@@ -27,16 +27,23 @@ const computedDataLabel = (data: any) => {
     })
 }
 computedDataLabel(chartData);
-let clickDetailLog:any = ref({});
-let clickSortLog:any = ref([]);
-const initChart = () => {
-    let myChart = echarts.init(chart.value);
-    let data = chartData.map((v) => {
+let pathLog: any = ref([]);
+const computedChartData = (_d: any) => {
+    return _d.map((v: any) => {
         return {
             ...v,
-            value: v.children.length
+            value: v.children ? v.children.length : 1
         }
     })
+}
+const initChart = () => {
+    let myChart = echarts.init(chart.value);
+    let data = computedChartData(chartData);
+    pathLog.value.push({
+        path: 'root',
+        computedDataLabel_k: 'root',
+        data
+    });
     let option = {
         tooltip: {
             trigger: 'item',
@@ -45,54 +52,58 @@ const initChart = () => {
         series: [
             {
                 type: 'pie',
+                id: 'pie',
                 data: data
             }
         ]
     };
     myChart.setOption(option);
-    myChart.on('click', (_e: any) => {
-        if (_e.data.children && _e.data.children.length) {
-            let data_ = _e.data.children.map((v: any) => {
-                return {
-                    ...v,
-                    value: v.children ? v.children.length : 1
-                }
-            })
-            clickSortLog.value.push(_e.data.computedDataLabel_k);
-            clickDetailLog.value[_e.data.computedDataLabel_k] = data_;
-            
+
+    myChart.on('click', (event: any) => {
+        const { children, name, computedDataLabel_k, key } = event.data;
+
+        if (children && children.length) {
+            let cdata = computedChartData(children);
+            let pathLog_computedDataLabel_ks = pathLog.value.map((v: any) => {
+                return v.computedDataLabel_k;
+            });
+            if (!pathLog_computedDataLabel_ks.includes(computedDataLabel_k)) {
+                pathLog.value.push({
+                    path: name,
+                    computedDataLabel_k,
+                    data: cdata
+                });
+            }
             myChart.setOption({
                 series: [
                     {
-                        data: data_
+                        id: 'pie',
+                        data: cdata
                     }
                 ]
             })
-            return
+            return;
         }
         router.push({
-            path: '/study/' + encodeURI(_e.data?.key)
+            path: '/study/' + encodeURI(key)
         })
     })
 }
 const handleGoBack = () => {
-    let myChart = echarts.init(chart.value);
+    let len = pathLog.value.length;
+    if (len <= 1) return;
+    let backDetail = pathLog.value[len - 1 - 1];
+    pathLog.value.splice(len - 1, 1);
+    const { data } = backDetail;
+    let myChart = echarts.getInstanceByDom(chart.value);
     myChart?.setOption({
         series: [
             {
-                data: clickDetailLog.value[clickSortLog.value[clickSortLog.value.length - 1]].map((v:any) => {
-                    return {
-                       ...v,
-                        value:v.children ? v.children.length : 1
-                    }
-                })
+                id: 'pie',
+                data
             }
         ]
     })
-    delete clickDetailLog.value[clickSortLog.value[clickSortLog.value.length - 1]];
-    clickSortLog.value.pop();
-    console.log(clickSortLog.value);
-    
 }
 onMounted(() => {
     initChart();
@@ -101,8 +112,18 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .home {
-    width: 60%;
+    width: 100%;
     height: auto;
+    position: relative;
+
+    .home_back {
+        position: absolute;
+        left: 50%;
+        top: 2%;
+        transform: translateX(-50%);
+        cursor: pointer;
+        z-index: 999999999999;
+    }
 }
 
 .chart {
