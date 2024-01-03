@@ -140,10 +140,10 @@ const initChart = () => {
         ]
     };
     myChart.setOption(option);
-    const resizeObserve = new ResizeObserver(() => {
-        myChart.resize();
-    });
-    resizeObserve.observe(chart.value);
+    // const resizeObserve = new ResizeObserver(() => {
+    //     myChart.resize();
+    // });
+    // resizeObserve.observe(chart.value);
 
     chartEventMethods(myChart)
 }
@@ -243,18 +243,18 @@ onMounted(() => {
 })
 router.beforeEach((_to, form) => {
     if (form.path.includes('study') || form.path.includes('question')) {
-        let myChart = echarts.getInstanceByDom(chart.value);
-        let option: any = JSON.parse(JSON.stringify(myChart?.getOption()));
-        myChart?.dispose();
-        requestAnimationFrame(() => {
-            chart.value.removeAttribute('style')
-            chart.value.removeAttribute('_echarts_instance_')
-            chart.value.removeAttribute('aria-label')
-            let myChart_ = echarts.init(chart.value);
-            option.series[0].data = pathLog.value[pathLog.value.length - 1].data;
-            myChart_?.setOption(option);
-            chartEventMethods(myChart_);
-        })
+        // let myChart = echarts.getInstanceByDom(chart.value);
+        // let option: any = JSON.parse(JSON.stringify(myChart?.getOption()));
+        // myChart?.dispose();
+        // requestAnimationFrame(() => {
+        //     chart.value.removeAttribute('style')
+        //     chart.value.removeAttribute('_echarts_instance_')
+        //     chart.value.removeAttribute('aria-label')
+        //     let myChart_ = echarts.init(chart.value);
+        //     option.series[0].data = pathLog.value[pathLog.value.length - 1].data;
+        //     myChart_?.setOption(option);
+        //     chartEventMethods(myChart_);
+        // })
     }
 })
 </script>
