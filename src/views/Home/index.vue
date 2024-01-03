@@ -50,6 +50,38 @@ const initChart = () => {
             trigger: 'item',
             triggerOn: 'mousemove'
         },
+        color: [
+            '#80bcbd',
+            '#2d3250',
+            '#43766c',
+            '#525ceb',
+            '#dc84f3',
+            '#ffe7c1',
+            '#176b87',
+            '#4f6f52',
+            '#a1eebd',
+            '#bf3131',
+            '#52d3d8',
+            '#ff9800',
+            '#5d3587',
+            '#65b741',
+            '#ff90bc',
+            '#1b4242',
+            '#7ed7c1',
+            '#9ade7b',
+            '#7071e8',
+            '#0766ad',
+            '#ffc5c5',
+            '#af2655',
+            '#83a2ff',
+            '#ec8f5e',
+            '#2b3499',
+            '#39a7ff',
+            '#ff6c22',
+            '#005b41',
+            '#b0578d',
+            '#6499e9'
+        ],
         series: [
             {
                 type: 'pie',
@@ -62,7 +94,7 @@ const initChart = () => {
 
     myChart.on('click', (event: any) => {
         const { children, name, computedDataLabel_k, key } = event.data;
-        if(pathLog.value.length === 1){
+        if (pathLog.value.length === 1) {
             isClickType.value = name;
         }
         if (children && children.length) {
@@ -88,8 +120,8 @@ const initChart = () => {
             return;
         }
         let routerPath = '/study/' + encodeURI(key);
-        if(isClickType.value === '知识') routerPath = '/study/' + encodeURI(key);
-        else if(isClickType.value === '面试') routerPath = '/question/' + encodeURI(key);
+        if (isClickType.value === '知识') routerPath = '/study/' + encodeURI(key);
+        else if (isClickType.value === '面试') routerPath = '/question/' + encodeURI(key);
         router.push({
             path: routerPath
         })

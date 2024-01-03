@@ -36,7 +36,7 @@ const Home = {
     component: () => import('../views/Home/index.vue'),
     meta: {
         title: '首页',
-        keepAlive: false,
+        keepAlive: true,
         name: 'home'
     },
 }
