@@ -150,6 +150,7 @@ const initChart = () => {
 const chartEventMethods = (myChart:any) =>{
     let isRoot = false;
     myChart.getZr().on('click', (e: any) => {
+        if(!e.target?.style) return;
         const { fill, text } = e.target.style;
         if (fill == '#666') {
             let routerPath = '';
