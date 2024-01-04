@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Markdown from 'vite-plugin-md';
+import code from '@yankeeinlondon/code-builder'
 import path from 'path'
 const { resolve } = path;
-
 // ant-design-vue 自动局部插件
 import Components from 'unplugin-vue-components/vite';
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
@@ -18,7 +18,9 @@ export default defineConfig({
     vue({
       include: [/\.vue$/, /\.md$/],
     }),
-    Markdown(),
+    Markdown({
+      builders: [code()]
+    }),
     Components({
       resolvers: [
         AntDesignVueResolver({
