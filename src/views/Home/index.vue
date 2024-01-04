@@ -254,8 +254,8 @@ const handleClickPathItem = (item: any, key: number) => {
 onMounted(() => {
     initChart();
 })
-router.beforeEach((_to, form) => {
-    if (form.path.includes('study') || form.path.includes('question')) {
+router.beforeEach((_to, _form) => {
+    if (_to.path === '/home') {
         chartResizeObserve.value.unobserve(chart.value);
         chartResizeObserve.value = undefined;
         let myChart = echarts.getInstanceByDom(chart.value);
