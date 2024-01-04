@@ -65,7 +65,7 @@ items.value = props.items;
 **/
 const handleClick = (e: any, is: boolean = false) => {
     if (!is) treeValue.value = undefined;
-    router.push({
+    router.replace({
         path: `${props.beginPath}${encodeURI(e.key)}`
     })
 }
