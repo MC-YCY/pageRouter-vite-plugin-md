@@ -50,14 +50,11 @@ const computedChartData = (_d: any) => {
         }
     })
 }
-const initChart = () => {
+let chartResizeObserve = ref();
+const initChart = (is: boolean = false) => {
     let myChart = echarts.init(chart.value);
     let data = computedChartData(chartData);
-    pathLog.value.push({
-        path: 'root',
-        computedDataLabel_k: 'root',
-        data
-    });
+
     data.map((item: any) => {
         item['name'] = '🙂' + item.name;
         item['label'] = {
@@ -139,18 +136,34 @@ const initChart = () => {
             }
         ]
     };
-    myChart.setOption(option);
-    // const resizeObserve = new ResizeObserver(() => {
-    //     myChart.resize();
-    // });
-    // resizeObserve.observe(chart.value);
-
+    if (is) {
+        myChart?.dispose();
+        myChart = echarts.init(chart.value)
+        option.series[0].data = pathLog.value[pathLog.value.length - 1].data;
+        myChart.setOption(option);
+    } else {
+        pathLog.value.push({
+            path: 'root',
+            computedDataLabel_k: 'root',
+            data
+        });
+        myChart.setOption(option);
+    }
+    if (!chartResizeObserve.value) {
+        setTimeout(() => {
+            const resizeObserve = new ResizeObserver(() => {
+                myChart.resize();
+            });
+            resizeObserve.observe(chart.value);
+            chartResizeObserve.value = resizeObserve;
+        }, 1000)
+    }
     chartEventMethods(myChart)
 }
-const chartEventMethods = (myChart:any) =>{
+const chartEventMethods = (myChart: any) => {
     let isRoot = false;
     myChart.getZr().on('click', (e: any) => {
-        if(!e.target?.style) return;
+        if (!e.target?.style) return;
         const { fill, text } = e.target.style;
         if (fill == '#666') {
             let routerPath = '';
@@ -170,7 +183,7 @@ const chartEventMethods = (myChart:any) =>{
             isRoot = false;
             return
         };
-        
+
         const { children, name, computedDataLabel_k, key } = event.data;
         if (pathLog.value.length === 1) {
             isClickType.value = name;
@@ -243,18 +256,17 @@ onMounted(() => {
 })
 router.beforeEach((_to, form) => {
     if (form.path.includes('study') || form.path.includes('question')) {
-        // let myChart = echarts.getInstanceByDom(chart.value);
-        // let option: any = JSON.parse(JSON.stringify(myChart?.getOption()));
-        // myChart?.dispose();
-        // requestAnimationFrame(() => {
-        //     chart.value.removeAttribute('style')
-        //     chart.value.removeAttribute('_echarts_instance_')
-        //     chart.value.removeAttribute('aria-label')
-        //     let myChart_ = echarts.init(chart.value);
-        //     option.series[0].data = pathLog.value[pathLog.value.length - 1].data;
-        //     myChart_?.setOption(option);
-        //     chartEventMethods(myChart_);
-        // })
+        chartResizeObserve.value.unobserve(chart.value);
+        chartResizeObserve.value = undefined;
+        let myChart = echarts.getInstanceByDom(chart.value);
+        myChart?.dispose();
+        chart.value.removeAttribute('style')
+        chart.value.removeAttribute('_echarts_instance_')
+        chart.value.removeAttribute('aria-label')
+        requestAnimationFrame(() => {
+            chartResizeObserve.value = undefined;
+            initChart(true);
+        })
     }
 })
 </script>
