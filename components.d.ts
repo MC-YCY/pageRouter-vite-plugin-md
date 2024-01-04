@@ -11,8 +11,12 @@ declare module 'vue' {
     ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
     AMenu: typeof import('ant-design-vue/es')['Menu']
+    ATooltip: typeof import('ant-design-vue/es')['Tooltip']
+    ATreeSelect: typeof import('ant-design-vue/es')['TreeSelect']
+    ContentRouterPage: typeof import('./src/components/contentRouterPage.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
+    RouterPage: typeof import('./src/components/RouterPage.vue')['default']
     RouterView: typeof import('vue-router')['RouterView']
   }
 }
