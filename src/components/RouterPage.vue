@@ -216,6 +216,7 @@ const handleClickBack = () =>{
                 overflow: hidden;
                 position: absolute;
                 left: 36px;
+                z-index: 999;
                 transition: all .3s linear;
             }
         }
