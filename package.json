@@ -10,10 +10,14 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
+    "@yankeeinlondon/code-builder": "^1.2.1",
     "ant-design-vue": "^4.0.8",
     "echarts": "^5.4.3",
     "less": "^4.2.0",
     "less-loader": "^11.1.4",
+    "markdown-it-anchor": "^8.6.7",
+    "markdown-it-prism": "^2.3.0",
+    "markdown-it-toc-done-right": "^4.2.0",
     "vite-plugin-md": "^0.22.5",
     "vue": "^3.2.47",
     "vue-router": "^4.2.5"
@@ -21,7 +25,6 @@
   "devDependencies": {
     "@types/node": "^20.10.6",
     "@vitejs/plugin-vue": "^4.1.0",
-    "@yankeeinlondon/code-builder": "^1.2.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.2",
     "unplugin-vue-components": "^0.26.0",
