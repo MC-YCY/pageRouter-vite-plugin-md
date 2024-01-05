@@ -5,6 +5,9 @@
 ```
 .
 ├── src
+│   ├── assets
+│   │   ├── markdown.css
+│   │   ├── prism.css
 │   ├── components
 │   │   ├── RouterPage.vue
 │   ├── Markdowns
@@ -18,4 +21,8 @@
 │   │   ├── Question
 │   │   ├── Study
 ```
-Markdowns 下的文件和 router/mds 的数据 routerKey一致；
+**Markdowns** 下的文件名和 **router/mds** 的数据中 **routerKey**一致；
+
+**assets/markdown.css** 用于markdown解析样式；
+
+**assets/prism.css** 用于代码高亮样式；
