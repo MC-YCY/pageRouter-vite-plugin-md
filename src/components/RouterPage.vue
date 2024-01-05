@@ -26,7 +26,7 @@
                     :items="items" @click="handleClick"></a-menu>
             </div>
         </div>
-        <div class="menus_content">
+        <div class="menus_content" ref="menusContent">
             <router-view v-slot="{ Component }">
                 <keep-alive>
                     <component :is="Component" v-if="route.meta.keepAlive" :key="route.meta.key" />
@@ -63,8 +63,10 @@ items.value = props.items;
 * @param e 点击事件
 * @param is 是否为点击树节点
 **/
+let menusContent:any = ref(null);
 const handleClick = (e: any, is: boolean = false) => {
     if (!is) treeValue.value = undefined;
+    menusContent.value.scrollTop = 0;
     router.replace({
         path: `${props.beginPath}${encodeURI(e.key)}`
     })
