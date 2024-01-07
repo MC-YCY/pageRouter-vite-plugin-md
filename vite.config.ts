@@ -13,7 +13,7 @@ import mitp from 'markdown-it-prism';
 // 代码块什么的
 import code from '@yankeeinlondon/code-builder';
 // 目录 这个没效果 待解决
-import toc from 'markdown-it-toc-done-right';
+// import toc from 'markdown-it-toc-done-right';
 
 
 // https://vitejs.dev/config/
@@ -34,7 +34,7 @@ export default defineConfig({
       },
       markdownItSetup(md) {
         md.use(mita, { permalink: true, permalinkBefore: true, permalinkSymbol: '#' })
-        md.use(toc)
+        // md.use(toc);
         md.use(mitp);
       },
     }),
