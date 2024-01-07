@@ -34,7 +34,6 @@ export default defineConfig({
       },
       markdownItSetup(md) {
         md.use(mita, { permalink: true, permalinkBefore: true, permalinkSymbol: '#' })
-        // md.use(toc);
         md.use(mitp);
       },
     }),

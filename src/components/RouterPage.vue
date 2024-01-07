@@ -3,12 +3,12 @@
         <div class="menus_actions">
             <div class="menus_actions_header">
                 <div class="menus_actions_header_title">
-                    {{ props.beginPath =='/study/' ? '文档' : '题库' }}
+                    {{ props.beginPath == '/study/' ? '文档' : '题库' }}
                 </div>
                 <div class="menus_actions_header_back">
                     <a-button @click="handleClickBack" type="primary" :icon="h(RollbackOutlined)" />
                 </div>
-                <div class="menus_actions_header_tree " :class="{'menus_actions_header_treeShow':screenVisible}">
+                <div class="menus_actions_header_tree " :class="{ 'menus_actions_header_treeShow': screenVisible }">
                     <a-button @click="handleClickScreen" class="menus_actions_header_tree_but" type="primary"
                         :icon="h(SearchOutlined)" />
                     <div class="menus_actions_header_tree_select">
@@ -26,7 +26,6 @@
                     :items="items" @click="handleClick"></a-menu>
             </div>
         </div>
-        <!-- <div class="toc-container" id="toc-container"></div> -->
         <div class="menus_content" ref="menusContent">
             <router-view v-slot="{ Component }">
                 <keep-alive>
@@ -34,6 +33,7 @@
                 </keep-alive>
                 <component :is="Component" v-if="!route.meta.keepAlive" />
             </router-view>
+            <div class="toc-container" ref="tocContainer"></div>
         </div>
     </div>
 </template>
@@ -65,8 +65,17 @@ items.value = props.items;
 * @param e 点击事件
 * @param is 是否为点击树节点
 **/
-let menusContent:any = ref(null);
+let tocContainer = ref();
+let menusContent: any = ref(null);
 const handleClick = (e: any, is: boolean = false) => {
+    import('/@/Markdowns/' + e.key + '.md').then(res => {
+        let str = res.default.render().children[0].children;
+        let div = document.createElement('div');
+        div.setAttribute('class','toc-container-root')
+        div.innerHTML = str;
+        tocContainer.value.innerHTML = ``;
+        tocContainer.value.appendChild(div);
+    })
     if (!is) treeValue.value = undefined;
     menusContent.value.scrollTop = 0;
     router.replace({
@@ -139,11 +148,11 @@ const hnadleTreeChange = (value: string) => {
 }
 
 let screenVisible = ref(false);
-const handleClickScreen = () =>{
+const handleClickScreen = () => {
     screenVisible.value = !screenVisible.value;
 }
 
-const handleClickBack = () =>{
+const handleClickBack = () => {
     router.replace({
         path: '/home'
     })
@@ -174,7 +183,8 @@ const handleClickBack = () =>{
         padding-right: 6px;
         padding-left: 16px;
         display: flex;
-        .menus_actions_header_title{
+
+        .menus_actions_header_title {
             height: 20px;
             line-height: 18px;
             font-weight: 600;
@@ -184,7 +194,8 @@ const handleClickBack = () =>{
             position: relative;
             padding-left: 6px;
             color: #666;
-            &::before{
+
+            &::before {
                 content: '';
                 width: 3px;
                 position: absolute;
@@ -196,7 +207,7 @@ const handleClickBack = () =>{
             }
         }
 
-        .menus_actions_header_back{
+        .menus_actions_header_back {
             margin-right: 10px;
         }
 
@@ -214,6 +225,7 @@ const handleClickBack = () =>{
                 position: absolute;
                 left: 0px;
             }
+
             .menus_actions_header_tree_select {
                 width: 0px;
                 min-width: 0px;
@@ -224,8 +236,9 @@ const handleClickBack = () =>{
                 transition: all .3s linear;
             }
         }
-        .menus_actions_header_treeShow{
-            .menus_actions_header_tree_select{
+
+        .menus_actions_header_treeShow {
+            .menus_actions_header_tree_select {
                 width: 260px;
                 overflow: visible;
             }
@@ -258,6 +271,29 @@ const handleClickBack = () =>{
         overflow: auto;
         box-sizing: border-box;
         padding: 14px;
+        position: relative;
+        .toc-container{
+            position: fixed;
+            right: 10px;
+            top: 50%;
+            width: 200px;
+            max-height: 500px;
+            background-color: #ccc;
+            transform: translateY(-50%);
+            overflow: auto;
+            :deep(.toc-container-root){
+                *{
+                    display:none;
+                }
+                h1,h2,h3,h4,h5{
+                    display: block;
+                    display: flex;
+                    a{
+                        display: block;
+                    }
+                }
+            }
+        }
 
         &::-webkit-scrollbar {
             width: 6px;
