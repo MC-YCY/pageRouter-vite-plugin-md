@@ -138,11 +138,13 @@ const markdownBodyToDirectoryFn = () => {
     directory.value.treeData = result[0].children;
     directory.value.expandedKeys = expandedKeys;
 }
+// tree 选中事件处理
 const handleTreeChange = (e: string[]) => {
     if(e.length){
         window.location.href = route.path + e[0];
     }
 }
+// 监听 window.location.hash 改变事件
 window.addEventListener('hashchange', function () {
     let activeTitle = window.location.hash;
     directory.value.selectedKeys.length = 0;
