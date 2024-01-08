@@ -348,6 +348,7 @@ const handleClickBack = () => {
         padding: 14px;
         position: relative;
         flex: 1;
+        scroll-behavior: smooth;
 
 
         &::-webkit-scrollbar {
