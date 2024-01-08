@@ -22,8 +22,8 @@
                 </div>
             </div>
             <div class="menus_actions_selects">
-                <a-menu v-model:openKeys="MenuSelect.openKeys" v-model:selectedKeys="MenuSelect.selectedKeys" style="width:100%" mode="inline"
-                    :items="MenuSelect.items" @click="handleClick"></a-menu>
+                <a-menu v-model:openKeys="MenuSelect.openKeys" v-model:selectedKeys="MenuSelect.selectedKeys"
+                    style="width:100%" mode="inline" :items="MenuSelect.items" @click="handleClick"></a-menu>
             </div>
         </div>
         <div class="menus_content" ref="menusContent">
@@ -51,7 +51,7 @@
 <script lang="ts" setup>
 import { RollbackOutlined, SearchOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { useRouter, useRoute } from 'vue-router';
-import { ref, onMounted, defineProps, nextTick, h ,onUnmounted} from 'vue';
+import { ref, onMounted, defineProps, nextTick, h, onUnmounted } from 'vue';
 const router = useRouter();
 const route = useRoute();
 let props = defineProps({
@@ -64,10 +64,10 @@ let props = defineProps({
         default: '/study/'
     }
 });
-let MenuSelect = ref<{ openKeys: string[], selectedKeys: string[], items:any[] }>({
-    openKeys:[],
-    selectedKeys:[],
-    items:props.items
+let MenuSelect = ref<{ openKeys: string[], selectedKeys: string[], items: any[] }>({
+    openKeys: [],
+    selectedKeys: [],
+    items: props.items
 })
 
 /*
@@ -79,6 +79,8 @@ let menusContent: any = ref(null);
 const handleClick = (e: any, is: boolean = false) => {
     if (!is) treeValue.value = undefined;
     menusContent.value.scrollTop = 0;
+    directory.value.expandedKeys.length = 0;
+    directory.value.selectedKeys.length = 0;
     router.replace({
         path: `${props.beginPath}${encodeURI(e.key)}`
     })
@@ -119,7 +121,7 @@ function transformToTree(data: any): any {
 const markdownBodyToDirectoryFn = () => {
     let HTagsName = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
     let markdownBody: HTMLElement = menusContent.value?.querySelector('.markdown-body');
-    if(!markdownBody) return;
+    if (!markdownBody) return;
     let markdownBodyChildren: Element[] = [...markdownBody.children];
     let hTags = markdownBodyChildren.filter((tag: Element) => {
         if (HTagsName.includes(tag.nodeName)) {
@@ -146,14 +148,14 @@ const handleTreeChange = (e: string[]) => {
     }
 }
 // 监听 window.location.hash 改变事件
-const hashchangeFn = () =>{
+const hashchangeFn = () => {
     let activeTitle = window.location.hash;
     directory.value.selectedKeys.length = 0;
     directory.value.selectedKeys.push(activeTitle);
 }
 window.addEventListener('hashchange', hashchangeFn);
-onUnmounted(()=>{
-    window.removeEventListener('hashchange', hashchangeFn,true);
+onUnmounted(() => {
+    window.removeEventListener('hashchange', hashchangeFn, true);
 })
 /**
 * 根据路由路径设置树节点选中和展开
@@ -213,6 +215,7 @@ let arrayTotreeData = (data: any, arr: any = []) => {
 }
 const hnadleTreeChange = (value: string) => {
     let arr = arrayTotreeData(MenuSelect.value.items);
+    // 用来判断 是否点击没有 children的项
     let _filter = arr.filter((v: any) => v.key == value)[0];
     if (!_filter) {
         nextTick(() => {
