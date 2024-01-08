@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <div class="home_tip">
+        <div class="home_tip" v-if="isInitShowTip" @animationend="handleAnimationEnd">
             <nav>点击扇形下钻以及跳转页面</nav>
             <nav>点击root层级的🙂label可直接进入</nav>
         </div>
@@ -25,7 +25,6 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 import { chartData } from '/@/router/mds';
 let chart = ref();
-
 let computedDataLabel_k = 0;
 const computedDataLabel = (data: any) => {
     data.map((item: any) => {
@@ -269,6 +268,12 @@ router.beforeEach((_to, _form) => {
         })
     }
 })
+
+
+let isInitShowTip = ref(true);
+const handleAnimationEnd = () =>{
+    isInitShowTip.value = false;
+}
 </script>
 
 <style lang="less" scoped>

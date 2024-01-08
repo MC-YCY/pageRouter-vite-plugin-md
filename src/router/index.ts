@@ -1,5 +1,5 @@
-// createWebHashHistory
-import { createRouter, createWebHistory} from 'vue-router';
+// createWebHashHistory createWebHistory
+import { createRouter,createWebHistory} from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
 import {basicRoutes} from './pages';
 const root = {
