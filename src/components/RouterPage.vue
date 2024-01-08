@@ -51,7 +51,7 @@
 <script lang="ts" setup>
 import { RollbackOutlined, SearchOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { useRouter, useRoute } from 'vue-router';
-import { ref, onMounted, defineProps, nextTick, h } from 'vue';
+import { ref, onMounted, defineProps, nextTick, h ,onUnmounted} from 'vue';
 const router = useRouter();
 const route = useRoute();
 const openKeys = ref<string[]>([]);
@@ -118,7 +118,7 @@ function transformToTree(data: any): any {
 // 根据已经渲染的md element对象拿到h标签 函数计算出树 数据做目录
 const markdownBodyToDirectoryFn = () => {
     let HTagsName = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
-    let markdownBody: HTMLElement = menusContent.value.querySelector('.markdown-body');
+    let markdownBody: HTMLElement = menusContent.value?.querySelector('.markdown-body');
     let markdownBodyChildren: Element[] = [...markdownBody.children];
     let hTags = markdownBodyChildren.filter((tag: Element) => {
         if (HTagsName.includes(tag.nodeName)) {
@@ -145,11 +145,15 @@ const handleTreeChange = (e: string[]) => {
     }
 }
 // 监听 window.location.hash 改变事件
-window.addEventListener('hashchange', function () {
+const hashchangeFn = () =>{
     let activeTitle = window.location.hash;
     directory.value.selectedKeys.length = 0;
     directory.value.selectedKeys.push(activeTitle);
-});
+}
+window.addEventListener('hashchange', hashchangeFn);
+onUnmounted(()=>{
+    window.removeEventListener('hashchange', hashchangeFn,true);
+})
 /**
 * 根据路由路径设置树节点选中和展开
 */
