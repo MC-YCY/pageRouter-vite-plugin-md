@@ -119,6 +119,7 @@ function transformToTree(data: any): any {
 const markdownBodyToDirectoryFn = () => {
     let HTagsName = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
     let markdownBody: HTMLElement = menusContent.value?.querySelector('.markdown-body');
+    if(!markdownBody) return;
     let markdownBodyChildren: Element[] = [...markdownBody.children];
     let hTags = markdownBodyChildren.filter((tag: Element) => {
         if (HTagsName.includes(tag.nodeName)) {
