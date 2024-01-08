@@ -84,7 +84,7 @@ const handleClick = (e: any, is: boolean = false) => {
     })
 }
 
-let directory:any = ref({
+let directory: any = ref({
     expandedKeys: [],
     treeData: [],
     selectedKeys: [],
@@ -140,7 +140,7 @@ const markdownBodyToDirectoryFn = () => {
 }
 // tree 选中事件处理
 const handleTreeChange = (e: string[]) => {
-    if(e.length){
+    if (e.length) {
         window.location.href = route.path + e[0];
     }
 }
@@ -170,15 +170,14 @@ const menuToRouterPathStyle = () => {
                 openKeys.value.push(openValue)
             }
         })
-        selectedKeys.value.push(path)
+        selectedKeys.value.push(path);
+        nextTick(() => {
+            // 根据渲染的 md 文档 dom树计算目录
+            markdownBodyToDirectoryFn();
+        })
     } catch {
         console.error('根据root饼图进入无法设置默认选中菜单')
     }
-
-    nextTick(() => {
-        // 根据渲染的 md 文档 dom树计算目录
-        markdownBodyToDirectoryFn();
-    })
 }
 onMounted(() => {
     menuToRouterPathStyle();
@@ -375,7 +374,8 @@ const handleClickBack = () => {
             /*滚动条里面小方块*/
             background-color: #1677ff;
         }
-        :deep(.ant-tree-switcher-noop){
+
+        :deep(.ant-tree-switcher-noop) {
             display: none;
         }
 
