@@ -19,7 +19,7 @@
   <div class="content">水平居中</div>
 </div>
 ```
-#### （1）margin
+#### (1)margin
 如果块元素的高度和宽度已知，就可以通过将元素的左右`margin`值设置为`auto`将元素水平居中：
 ```css
 .content {
@@ -46,7 +46,7 @@
 }
 ```
 ### 3. 通用
-#### （1）Flex 布局
+#### (1)Flex 布局
 在 `Flex` 布局中，`justify-content`可以用于设置弹性盒子元素在主轴方向上的对齐方式。当其属性值为 `center` 时，其子元素整体会在主轴的中心位置。
 ```css
 .container {
@@ -62,15 +62,15 @@
 	align-items: center;
 }
 ```
-#### （2）Grid 布局
-在 `Grid` 布局中，`justify-content` 属性会沿着行轴线（水平方向） 在网格容器中对齐网格。当属性值为`center`时，就可以将网格对齐到网格容器的水平居中位置。
+#### (2)Grid 布局
+在 `Grid` 布局中，`justify-content` 属性会沿着行轴线(水平方向) 在网格容器中对齐网格。当属性值为`center`时，就可以将网格对齐到网格容器的水平居中位置。
 ```css
 .container {
   display: grid;
   justify-content: center;
 }
 ```
-#### （3）绝对定位
+#### (3)绝对定位
 可以通过将使用绝对定位和变换实现元素的水平居中：
 ```css
 .container {
@@ -102,7 +102,7 @@
   <div class="content">垂直居中</div>
 </div>
 ```
-#### （1）绝对定位
+#### (1)绝对定位
 可以通过将使用绝对定位和变换实现元素的垂直居中：
 ```css
 .container {
@@ -127,8 +127,8 @@
 }
 ```
 ### 2. 通用
-#### （1）Flex 布局
-在 `Flex` 布局中，`align-items` 属性用来定义`flex`子项在`flex`容器的当前行的侧轴（纵轴）方向上的对齐方式。当其属性值为 `center` 时，元素位于容器的中心。
+#### (1)Flex 布局
+在 `Flex` 布局中，`align-items` 属性用来定义`flex`子项在`flex`容器的当前行的侧轴(纵轴)方向上的对齐方式。当其属性值为 `center` 时，元素位于容器的中心。
 ```css
 .container {
   display: flex;
@@ -143,7 +143,7 @@
 	justify-content: center;
 }
 ```
-#### （2）Grid 布局
+#### (2)Grid 布局
 使用 `CSS Grid` 布局中，可以使用 `align-content` 属性将项目垂直居中到其网格区域。
 ```css
 .container {
@@ -194,7 +194,7 @@
   margin-left: -50px;
 }
 ```
-### （2）Flex 布局
+### (2)Flex 布局
 在使用 Flex 布局时，可以结合上面的水平和垂直居中来实现水平垂直居中：
 ```css
 .container {
@@ -203,7 +203,7 @@
   align-items: center;
 }
 ```
-### （3）Grid 布局
+### (3)Grid 布局
 在 Grid 布局中，可以使用以下形式来实现元素的水平垂直居中：
 ```css
 .container {

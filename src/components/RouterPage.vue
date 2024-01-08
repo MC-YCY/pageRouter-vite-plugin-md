@@ -33,15 +33,25 @@
                 </keep-alive>
                 <component :is="Component" v-if="!route.meta.keepAlive" />
             </router-view>
-            <div class="toc-container" ref="tocContainer"></div>
+        </div>
+        <div class="toc-container">
+            <a-tree @select="handleTreeChange" v-model:expandedKeys="directory.expandedKeys"
+                v-model:selectedKeys="directory.selectedKeys" show-line :tree-data="directory.treeData">
+                <template #switcherIcon="{ switcherCls }"><down-outlined :class="switcherCls" /></template>
+                <template #title="{ key: _key, title }">
+                    <!-- <a :href="_key" tabindex="-1"> -->
+                    {{ title.split('#')[1].trim() }}
+                    <!-- </a> -->
+                </template>
+            </a-tree>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { RollbackOutlined, SearchOutlined } from '@ant-design/icons-vue';
+import { RollbackOutlined, SearchOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { useRouter, useRoute } from 'vue-router';
-import { ref, onMounted, defineProps, nextTick, h } from 'vue';
+import { ref, onMounted, defineProps, nextTick, h, watch } from 'vue';
 const router = useRouter();
 const route = useRoute();
 const openKeys = ref<string[]>([]);
@@ -65,17 +75,8 @@ items.value = props.items;
 * @param e 点击事件
 * @param is 是否为点击树节点
 **/
-let tocContainer = ref();
 let menusContent: any = ref(null);
 const handleClick = (e: any, is: boolean = false) => {
-    import('/@/Markdowns/' + e.key + '.md').then(res => {
-        let str = res.default.render().children[0].children;
-        let div = document.createElement('div');
-        div.setAttribute('class','toc-container-root')
-        div.innerHTML = str;
-        tocContainer.value.innerHTML = ``;
-        tocContainer.value.appendChild(div);
-    })
     if (!is) treeValue.value = undefined;
     menusContent.value.scrollTop = 0;
     router.replace({
@@ -83,6 +84,68 @@ const handleClick = (e: any, is: boolean = false) => {
     })
 }
 
+let directory:any = ref({
+    expandedKeys: [],
+    treeData: [],
+    selectedKeys: [],
+})
+/*
+* 将 [{name:"H1"}，{name:"H2"}] 处理为树
+* @params data 
+* @return result 树形结构数据 
+* @return expandedKeys antv tree组件展开key
+*/
+function transformToTree(data: any): any {
+    let result: any = [];
+    let expandedKeys: any = [];
+    let map: any = {};
+    data.forEach((item: any) => {
+        let node = { ...item, name: item.name, children: [] };
+        map[node.name] = node;
+        if (item.name.charAt(1) === '1') {
+            result.push(node);
+            expandedKeys.push(node.key);
+        } else {
+            let parentName = 'H' + (parseInt(item.name.charAt(1)) - 1);
+            if (map[parentName]) {
+                expandedKeys.push(node.key);
+                map[parentName].children.push(node);
+            }
+        }
+    });
+    return { result, expandedKeys };
+}
+// 根据已经渲染的md element对象拿到h标签 函数计算出树 数据做目录
+const markdownBodyToDirectoryFn = () => {
+    let HTagsName = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
+    let markdownBody: HTMLElement = menusContent.value.querySelector('.markdown-body');
+    let markdownBodyChildren: Element[] = [...markdownBody.children];
+    let hTags = markdownBodyChildren.filter((tag: Element) => {
+        if (HTagsName.includes(tag.nodeName)) {
+            return tag;
+        }
+    }).map((tag: Element) => {
+        let aTag = tag.querySelector('a');
+        let aTagLink = aTag?.getAttribute('href');
+        let tagText = tag.textContent;
+        return {
+            key: aTagLink,
+            title: tagText,
+            name: tag.nodeName,
+        }
+    });
+    let { result, expandedKeys } = transformToTree(hTags);
+    directory.value.treeData = result[0].children;
+    directory.value.expandedKeys = expandedKeys;
+}
+const handleTreeChange = (e: string[]) => {
+    window.location.href = route.path + e[0];
+}
+window.addEventListener('hashchange', function () {
+    let activeTitle = window.location.hash;
+    directory.value.selectedKeys.length = 0;
+    directory.value.selectedKeys.push(activeTitle);
+});
 /**
 * 根据路由路径设置树节点选中和展开
 */
@@ -107,6 +170,11 @@ const menuToRouterPathStyle = () => {
     } catch {
         console.error('根据root饼图进入无法设置默认选中菜单')
     }
+
+    nextTick(() => {
+        // 根据渲染的 md 文档 dom树计算目录
+        markdownBodyToDirectoryFn();
+    })
 }
 onMounted(() => {
     menuToRouterPathStyle();
@@ -266,34 +334,13 @@ const handleClickBack = () => {
     }
 
     .menus_content {
-        flex: 1;
         height: 100vh;
         overflow: auto;
         box-sizing: border-box;
         padding: 14px;
         position: relative;
-        .toc-container{
-            position: fixed;
-            right: 10px;
-            top: 50%;
-            width: 200px;
-            max-height: 500px;
-            background-color: #ccc;
-            transform: translateY(-50%);
-            overflow: auto;
-            :deep(.toc-container-root){
-                *{
-                    display:none;
-                }
-                h1,h2,h3,h4,h5{
-                    display: block;
-                    display: flex;
-                    a{
-                        display: block;
-                    }
-                }
-            }
-        }
+        flex: 1;
+
 
         &::-webkit-scrollbar {
             width: 6px;
@@ -305,4 +352,44 @@ const handleClickBack = () => {
             background-color: #1677ff;
         }
     }
-}</style>
+
+    .toc-container {
+        right: 10px;
+        top: 50%;
+        min-width: 240px;
+        max-width: 240px;
+        height: 100vh;
+        max-height: 100vh;
+        overflow: auto;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+            background-color: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            /*滚动条里面小方块*/
+            background-color: #1677ff;
+        }
+
+        :deep(.toc-container-root) {
+            * {
+                display: none;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4,
+            h5 {
+                display: block;
+                display: flex;
+
+                a {
+                    display: block;
+                }
+            }
+        }
+    }
+}
+</style>

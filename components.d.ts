@@ -11,6 +11,7 @@ declare module 'vue' {
     ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
     AMenu: typeof import('ant-design-vue/es')['Menu']
+    ATree: typeof import('ant-design-vue/es')['Tree']
     ATreeSelect: typeof import('ant-design-vue/es')['TreeSelect']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterPage: typeof import('./src/components/RouterPage.vue')['default']
