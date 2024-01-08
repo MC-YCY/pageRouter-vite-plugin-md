@@ -37,11 +37,11 @@
         <div class="toc-container">
             <a-tree @select="handleTreeChange" v-model:expandedKeys="directory.expandedKeys"
                 v-model:selectedKeys="directory.selectedKeys" show-line :tree-data="directory.treeData">
-                <template #switcherIcon="{ switcherCls }"><down-outlined :class="switcherCls" /></template>
+                <template #switcherIcon><down-outlined /></template>
                 <template #title="{ key: _key, title }">
-                    <!-- <a :href="_key" tabindex="-1"> -->
-                    {{ title.split('#')[1].trim() }}
-                    <!-- </a> -->
+                    <span :id="_key">
+                        {{ title.split('#')[1].trim() }}
+                    </span>
                 </template>
             </a-tree>
         </div>
@@ -51,7 +51,7 @@
 <script lang="ts" setup>
 import { RollbackOutlined, SearchOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { useRouter, useRoute } from 'vue-router';
-import { ref, onMounted, defineProps, nextTick, h, watch } from 'vue';
+import { ref, onMounted, defineProps, nextTick, h } from 'vue';
 const router = useRouter();
 const route = useRoute();
 const openKeys = ref<string[]>([]);
@@ -139,7 +139,9 @@ const markdownBodyToDirectoryFn = () => {
     directory.value.expandedKeys = expandedKeys;
 }
 const handleTreeChange = (e: string[]) => {
-    window.location.href = route.path + e[0];
+    if(e.length){
+        window.location.href = route.path + e[0];
+    }
 }
 window.addEventListener('hashchange', function () {
     let activeTitle = window.location.hash;
@@ -370,6 +372,9 @@ const handleClickBack = () => {
         &::-webkit-scrollbar-thumb {
             /*滚动条里面小方块*/
             background-color: #1677ff;
+        }
+        :deep(.ant-tree-switcher-noop){
+            display: none;
         }
 
         :deep(.toc-container-root) {
