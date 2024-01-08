@@ -22,8 +22,8 @@
                 </div>
             </div>
             <div class="menus_actions_selects">
-                <a-menu v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" style="width:100%" mode="inline"
-                    :items="items" @click="handleClick"></a-menu>
+                <a-menu v-model:openKeys="MenuSelect.openKeys" v-model:selectedKeys="MenuSelect.selectedKeys" style="width:100%" mode="inline"
+                    :items="MenuSelect.items" @click="handleClick"></a-menu>
             </div>
         </div>
         <div class="menus_content" ref="menusContent">
@@ -54,10 +54,6 @@ import { useRouter, useRoute } from 'vue-router';
 import { ref, onMounted, defineProps, nextTick, h ,onUnmounted} from 'vue';
 const router = useRouter();
 const route = useRoute();
-const openKeys = ref<string[]>([]);
-const selectedKeys = ref<string[]>([]);
-let items: any = ref([]);
-
 let props = defineProps({
     items: {
         type: Array,
@@ -68,7 +64,11 @@ let props = defineProps({
         default: '/study/'
     }
 });
-items.value = props.items;
+let MenuSelect = ref<{ openKeys: string[], selectedKeys: string[], items:any[] }>({
+    openKeys:[],
+    selectedKeys:[],
+    items:props.items
+})
 
 /*
 * 菜单点击事件处理
@@ -84,7 +84,7 @@ const handleClick = (e: any, is: boolean = false) => {
     })
 }
 
-let directory: any = ref({
+let directory = ref<{ expandedKeys: string[], selectedKeys: string[], treeData: any[] }>({
     expandedKeys: [],
     treeData: [],
     selectedKeys: [],
@@ -159,8 +159,8 @@ onUnmounted(()=>{
 * 根据路由路径设置树节点选中和展开
 */
 const menuToRouterPathStyle = () => {
-    selectedKeys.value.length = 0;
-    openKeys.value.length = 0;
+    MenuSelect.value.openKeys.length = 0;
+    MenuSelect.value.selectedKeys.length = 0;
     try {
         let path = decodeURI(route.path).split(props.beginPath)[1];
         let paths = path.split('_');
@@ -172,10 +172,10 @@ const menuToRouterPathStyle = () => {
                 } else {
                     openValue += v;
                 }
-                openKeys.value.push(openValue)
+                MenuSelect.value.openKeys.push(openValue)
             }
         })
-        selectedKeys.value.push(path);
+        MenuSelect.value.selectedKeys.push(path);
         nextTick(() => {
             // 根据渲染的 md 文档 dom树计算目录
             markdownBodyToDirectoryFn();
@@ -212,7 +212,7 @@ let arrayTotreeData = (data: any, arr: any = []) => {
     return arr;
 }
 const hnadleTreeChange = (value: string) => {
-    let arr = arrayTotreeData(items.value);
+    let arr = arrayTotreeData(MenuSelect.value.items);
     let _filter = arr.filter((v: any) => v.key == value)[0];
     if (!_filter) {
         nextTick(() => {
