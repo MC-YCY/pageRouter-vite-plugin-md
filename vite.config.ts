@@ -12,9 +12,8 @@ import mita from 'markdown-it-anchor';
 import mitp from 'markdown-it-prism';
 // 代码块什么的
 import code from '@yankeeinlondon/code-builder';
-// 目录 这个没效果 待解决
+//! vite-public-md 暂不支持吧 ，改为页面内处理
 // import toc from 'markdown-it-toc-done-right';
-
 
 // https://vitejs.dev/config/
 function pathResolve(dir: string) {

@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref ,onUnmounted} from 'vue';
 import * as echarts from 'echarts';
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -49,7 +49,6 @@ const computedChartData = (_d: any) => {
         }
     })
 }
-let chartResizeObserve = ref();
 const initChart = (is: boolean = false) => {
     let myChart = echarts.init(chart.value);
     let data = computedChartData(chartData);
@@ -148,16 +147,7 @@ const initChart = (is: boolean = false) => {
         });
         myChart.setOption(option);
     }
-    if (!chartResizeObserve.value) {
-        setTimeout(() => {
-            const resizeObserve = new ResizeObserver(() => {
-                myChart.resize();
-            });
-            resizeObserve.observe(chart.value);
-            chartResizeObserve.value = resizeObserve;
-        }, 1000)
-    }
-    chartEventMethods(myChart)
+    chartEventMethods(myChart);
 }
 const chartEventMethods = (myChart: any) => {
     let isRoot = false;
@@ -250,20 +240,27 @@ const handleClickPathItem = (item: any, key: number) => {
         ]
     })
 }
+const resizeEcharts = () =>{
+    let myChart = echarts.getInstanceByDom(chart.value);
+    if (myChart) {
+        myChart.resize();
+    }
+}
 onMounted(() => {
     initChart();
+    window.addEventListener('resize',resizeEcharts);
+})
+onUnmounted(()=>{
+    window.removeEventListener('resize',resizeEcharts,true);
 })
 router.beforeEach((_to, _form) => {
     if (_to.path === '/home') {
-        chartResizeObserve.value.unobserve(chart.value);
-        chartResizeObserve.value = undefined;
         let myChart = echarts.getInstanceByDom(chart.value);
         myChart?.dispose();
         chart.value.removeAttribute('style')
         chart.value.removeAttribute('_echarts_instance_')
         chart.value.removeAttribute('aria-label')
         requestAnimationFrame(() => {
-            chartResizeObserve.value = undefined;
             initChart(true);
         })
     }

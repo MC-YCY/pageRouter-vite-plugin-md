@@ -79,6 +79,7 @@ let menusContent: any = ref(null);
 const handleClick = (e: any, is: boolean = false) => {
     if (!is) treeValue.value = undefined;
     menusContent.value.scrollTop = 0;
+    directory.value.treeData.length = 0;
     directory.value.expandedKeys.length = 0;
     directory.value.selectedKeys.length = 0;
     router.replace({
@@ -175,6 +176,7 @@ onUnmounted(() => {
 
 // 清除obseries
 const clearIntersectionObservers = () => {
+    if(!menusContent.value) return
     directory.value.intersectionObservers.map((inter: IntersectionObserver) => {
         inter.unobserve(menusContent.value);
     })
