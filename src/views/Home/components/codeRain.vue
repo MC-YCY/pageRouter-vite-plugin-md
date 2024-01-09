@@ -12,11 +12,11 @@ const randomText = () => {
 }
 const randomColor = () => {
     let colors = [
-        '#c678bb',
-        '#2d7de3',
-        '#e06c69',
-        '#98c379',
-        '#b09a66',
+        '#c678bb7a',
+        '#2d7de37a',
+        '#e06c697a',
+        '#98c3797a',
+        '#b09a667a',
     ];
     return colors[Math.floor(Math.random() * colors.length)];
 }
