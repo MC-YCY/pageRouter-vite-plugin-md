@@ -170,28 +170,38 @@ const hashchangeFn = () => {
 window.addEventListener('hashchange', hashchangeFn);
 onUnmounted(() => {
     window.removeEventListener('hashchange', hashchangeFn, true);
+    clearIntersectionObservers();
 })
 
+// 清除obseries
+const clearIntersectionObservers = () => {
+    directory.value.intersectionObservers.map((inter: IntersectionObserver) => {
+        inter.unobserve(menusContent.value);
+    })
+    directory.value.intersectionObservers.length = 0;
+    directory.value.intersectionObserverCount = 0;
+}
 // 内容 滚动显示的目录 联动右侧的目录
 const HtagsLinkageDirectory = () => {
     let { hTags } = markdownBodyToHtags(menusContent.value);
+    clearIntersectionObservers();
     hTags.map((node: Element) => {
         let intersectionObserver = new IntersectionObserver((_entries) => {
-            if(directory.value.intersectionObserverCount === directory.value.intersectionObservers.length){
-                if(!_entries[0].isIntersecting){
-                    let selectedKey = '#'+node.getAttribute('id');
+            if (directory.value.intersectionObserverCount === directory.value.intersectionObservers.length) {
+                if (!_entries[0].isIntersecting) {
+                    let selectedKey = '#' + node.getAttribute('id');
                     directory.value.selectedKeys.length = 0;
                     directory.value.selectedKeys.push(selectedKey);
                 }
-            }else{
+            } else {
                 directory.value.intersectionObserverCount++;
             }
         },
-        {
-            threshold:1.0,
-            rootMargin:'0px',
-            root: menusContent.value
-        }
+            {
+                threshold: 1.0,
+                rootMargin: '0px',
+                root: menusContent.value
+            }
         );
         intersectionObserver.observe(node);
         directory.value.intersectionObservers.push(intersectionObserver);
