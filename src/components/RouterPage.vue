@@ -395,7 +395,7 @@ const handleClickBack = () => {
         padding: 14px;
         position: relative;
         flex: 1;
-        scroll-behavior: smooth;
+        // scroll-behavior: smooth; 会影响scroll事件
 
 
         &::-webkit-scrollbar {
