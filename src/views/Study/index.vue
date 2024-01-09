@@ -1,5 +1,5 @@
 <template>
-    <RouterPage :items="Study" :beginPath="'/study/'"></RouterPage>
+    <RouterPage :items="Study" :beginPath="'/study/'" :title="'文档'"></RouterPage>
 </template>
 
 <script lang="ts" setup>

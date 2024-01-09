@@ -3,7 +3,7 @@
         <div class="menus_actions">
             <div class="menus_actions_header">
                 <div class="menus_actions_header_title">
-                    {{ props.beginPath == '/study/' ? '文档' : '题库' }}
+                    {{ props.title }}
                 </div>
                 <div class="menus_actions_header_back">
                     <a-button @click="handleClickBack" type="primary" :icon="h(RollbackOutlined)" />
@@ -62,6 +62,10 @@ let props = defineProps({
     beginPath: {
         type: String,
         default: '/study/'
+    },
+    title:{
+        type:String,
+        default:'文档'
     }
 });
 let MenuSelect = ref<{ openKeys: string[], selectedKeys: string[], items: any[] }>({
@@ -238,6 +242,8 @@ const menuToRouterPathStyle = () => {
             HtagsLinkageDirectory();
         })
     } catch {
+        // 如果是通过 😊进入同样设置为 初始表示没有进入过菜单中的某一个
+        isInitPage.value = true;
         console.error('根据root饼图进入无法设置默认选中菜单')
     }
 }
@@ -245,11 +251,11 @@ const menuToRouterPathStyle = () => {
 // 进入页面后面的跳转 根据路由守卫触发
 let isInitPage = ref(true)
 onMounted(() => {
-    menuToRouterPathStyle();
     isInitPage.value = false;
+    menuToRouterPathStyle();
 })
 router.afterEach((_to, _form, _next) => {
-    if(!isInitPage.value){
+    if(!isInitPage.value && _to.path != '/home'){
         console.log('no init');
         menuToRouterPathStyle();
     }
