@@ -5,31 +5,31 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted,onUnmounted } from 'vue';
 const randomText = () => {
     let text = 'sacomponentssacalendar'
     return text[Math.floor(Math.random() * text.length)];
 }
-const randomColor = (): string => {
+const randomColor = () => {
     let colors = [
-        '#1D5D9B',
-        '#75C2F6',
-        '#F4D160',
-        '#19A7CE',
-        '#F6FA70',
-        '#5D9C59'
+        '#1D5D9B5a',
+        '#75C2F65a',
+        '#F4D1605a',
+        '#19A7CE5a',
+        '#F6FA705a',
+        '#5D9C595a'
     ];
     return colors[Math.floor(Math.random() * colors.length)];
 }
-console.log(randomText(), randomColor())
-onMounted(() => {
-    let canBox: HTMLDivElement = document.querySelector('.codebox');
-    let can: HTMLCanvasElement = document.querySelector('.code');
-    let width: number = canBox.clientWidth;
-    let height: number = canBox.clientHeight;
+let timer:any = null;
+const initRain = () => {
+    let canBox:any = document.querySelector('.codebox');
+    let can:any = document.querySelector('.code');
+    let width = canBox.clientWidth;
+    let height = canBox.clientHeight;
     can.width = width;
     can.height = height;
-    let ctx: CanvasRenderingContext2D = can?.getContext('2d');
+    let ctx = can?.getContext('2d');
 
     // 字体大小
     const fontSize = 18;
@@ -61,15 +61,27 @@ onMounted(() => {
             }
         }
     }
-    setInterval(() => {
+    clearInterval(timer);
+    timer = setInterval(() => {
         draw();
     }, 30)
+}
+onMounted(() => {
+    initRain();
+    window.addEventListener('resize',initRain);
+})
+onUnmounted(()=>{
+    window.removeEventListener('resize',initRain,true);
 })
 </script>
 
 <style lang="less" scoped>
 .codebox {
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
+
+    canvas {
+        display: block;
+    }
 }
 </style>

@@ -15,12 +15,12 @@
             <a-button type="link" :size="'small'" @click="handleGoBack" style="margin-left:10px;">Back</a-button>
         </div>
         <div class="chart" ref="chart"></div>
-        <codeCom class="home_code"></codeCom>
+        <codeRain class="home_code"></codeRain>
     </div>
 </template>
 
 <script lang="ts" setup>
-import codeCom from './components/code.vue';
+import codeRain from './components/codeRain.vue';
 import { onMounted, ref ,onUnmounted} from 'vue';
 import * as echarts from 'echarts';
 import { useRouter } from 'vue-router';
@@ -380,6 +380,8 @@ const handleAnimationEnd = () =>{
             padding: 0px 2px;
             border-radius: 4px;
             font-weight: 600;
+            background-color: white;
+            padding-bottom: 2px;
         }
 
         .home_path_item:hover {
