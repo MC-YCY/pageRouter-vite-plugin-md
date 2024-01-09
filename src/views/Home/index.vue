@@ -49,6 +49,53 @@ const computedChartData = (_d: any) => {
         }
     })
 }
+let colors:string[] = [
+    '#FF9843',
+    '#FFDD95',
+    '#86A7FC',
+    '#3468C0',
+
+    '#D9EDBF',
+    '#FFB996',
+    '#FFCF81',
+    '#FDFFAB',
+
+    '#80BCBD',
+    '#AAD9BB',
+    '#D5F0C1',
+    '#F9F7C9',
+
+    '#7BD3EA',
+    '#A1EEBD',
+    '#F6F7C4',
+    '#F6D6D6',
+
+    '#FFF78A',
+    '#FFE382',
+    '#FFC47E',
+    '#FFAD84',
+
+    '#7071E8',
+    '#C683D7',
+    '#ED9ED6',
+    '#FFC7C7',
+
+    '#FF8F8F',
+    '#EEF296',
+    '#9ADE7B',
+    '#508D69',
+
+    '#FFC5C5',
+    '#FFEBD8',
+    '#C7DCA7',
+    '#89B9AD',
+
+    '#D0A2F7',
+
+    '#39A7FF',
+
+    '#A2C579'
+]
 const initChart = (is: boolean = false) => {
     let myChart = echarts.init(chart.value);
     let data = computedChartData(chartData);
@@ -70,6 +117,7 @@ const initChart = (is: boolean = false) => {
     })
     let option = {
         color: [
+            ...colors,
             '#a5f1e9',
             '#7fe9de',
             '#80bcbd',
