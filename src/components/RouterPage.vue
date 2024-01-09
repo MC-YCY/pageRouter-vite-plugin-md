@@ -176,6 +176,7 @@ window.addEventListener('hashchange', hashchangeFn);
 onUnmounted(() => {
     window.removeEventListener('hashchange', hashchangeFn, true);
     clearIntersectionObservers();
+    isInitPage.value = true;
 })
 
 // 清除obseries
