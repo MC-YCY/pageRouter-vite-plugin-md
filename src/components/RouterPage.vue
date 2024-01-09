@@ -63,9 +63,9 @@ let props = defineProps({
         type: String,
         default: '/study/'
     },
-    title:{
-        type:String,
-        default:'文档'
+    title: {
+        type: String,
+        default: '文档'
     }
 });
 let MenuSelect = ref<{ openKeys: string[], selectedKeys: string[], items: any[] }>({
@@ -134,7 +134,7 @@ function transformToTree(data: any): any {
 const markdownBodyToHtags = (dom: any): any => {
     let HTagsName = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
     let markdownBody: HTMLElement = dom?.querySelector('.markdown-body');
-    if (!markdownBody) return{ hTags: [], nameList: [] };
+    if (!markdownBody) return { hTags: [], nameList: [] };
     let markdownBodyChildren: Element[] = [...markdownBody.children];
     let hTags = markdownBodyChildren.filter((tag: Element) => {
         if (HTagsName.includes(tag.nodeName)) {
@@ -181,7 +181,7 @@ onUnmounted(() => {
 
 // 清除obseries
 const clearIntersectionObservers = () => {
-    if(!menusContent.value) return
+    if (!menusContent.value) return
     directory.value.intersectionObservers.map((inter: IntersectionObserver) => {
         inter.unobserve(menusContent.value);
     })
@@ -191,27 +191,18 @@ const clearIntersectionObservers = () => {
 // 内容 滚动显示的目录 联动右侧的目录
 const HtagsLinkageDirectory = () => {
     let { hTags } = markdownBodyToHtags(menusContent.value);
-    clearIntersectionObservers();
-    hTags.map((node: Element) => {
-        let intersectionObserver = new IntersectionObserver((_entries) => {
-            if (directory.value.intersectionObserverCount === directory.value.intersectionObservers.length) {
-                if (!_entries[0].isIntersecting) {
+    menusContent.value.addEventListener('scroll', (_event: Event) => {
+        let scrollPosition = menusContent.value.scrollTop
+        hTags.map((node:HTMLDivElement) => {
+            let sectionTop = node.offsetTop;
+            let sectionHeight = node.offsetHeight;
+            if (scrollPosition >= sectionTop - sectionHeight / 3 &&
+                scrollPosition < sectionTop + sectionHeight - sectionHeight / 3) {
                     let selectedKey = '#' + node.getAttribute('id');
                     directory.value.selectedKeys.length = 0;
                     directory.value.selectedKeys.push(selectedKey);
-                }
-            } else {
-                directory.value.intersectionObserverCount++;
             }
-        },
-            {
-                threshold: 1.0,
-                rootMargin: '0px',
-                root: menusContent.value
-            }
-        );
-        intersectionObserver.observe(node);
-        directory.value.intersectionObservers.push(intersectionObserver);
+        })
     })
 }
 
@@ -256,7 +247,7 @@ onMounted(() => {
     menuToRouterPathStyle();
 })
 router.afterEach((_to, _form, _next) => {
-    if(!isInitPage.value && _to.path != '/home'){
+    if (!isInitPage.value && _to.path != '/home') {
         console.log('no init');
         menuToRouterPathStyle();
     }
