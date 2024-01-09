@@ -130,7 +130,7 @@ function transformToTree(data: any): any {
 const markdownBodyToHtags = (dom: any): any => {
     let HTagsName = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
     let markdownBody: HTMLElement = dom?.querySelector('.markdown-body');
-    if (!markdownBody) return;
+    if (!markdownBody) return{ hTags: [], nameList: [] };
     let markdownBodyChildren: Element[] = [...markdownBody.children];
     let hTags = markdownBodyChildren.filter((tag: Element) => {
         if (HTagsName.includes(tag.nodeName)) {
@@ -241,14 +241,18 @@ const menuToRouterPathStyle = () => {
         console.error('根据root饼图进入无法设置默认选中菜单')
     }
 }
+// 用来区分 是否第一次进入内容页面，true是初始值表示第一次进入内容页面
+// 进入页面后面的跳转 根据路由守卫触发
+let isInitPage = ref(true)
 onMounted(() => {
     menuToRouterPathStyle();
+    isInitPage.value = false;
 })
-router.afterEach((to, _form, _next) => {
-    if (to.path == '/home') {
-        return;
+router.afterEach((_to, _form, _next) => {
+    if(!isInitPage.value){
+        console.log('no init');
+        menuToRouterPathStyle();
     }
-    menuToRouterPathStyle();
 })
 
 let treeValue = ref(undefined);
