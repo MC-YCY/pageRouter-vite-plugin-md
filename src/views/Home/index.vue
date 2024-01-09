@@ -15,10 +15,12 @@
             <a-button type="link" :size="'small'" @click="handleGoBack" style="margin-left:10px;">Back</a-button>
         </div>
         <div class="chart" ref="chart"></div>
+        <codeCom class="home_code"></codeCom>
     </div>
 </template>
 
 <script lang="ts" setup>
+import codeCom from './components/code.vue';
 import { onMounted, ref ,onUnmounted} from 'vue';
 import * as echarts from 'echarts';
 import { useRouter } from 'vue-router';
@@ -334,11 +336,17 @@ const handleAnimationEnd = () =>{
 
 .home {
     width: 100%;
-    height: auto;
+    height: 100vh;
     position: relative;
+    .home_code{
+        position: absolute;
+        left: 0px;
+        top: 0px;
+    }
 
     .home_tip {
         position: absolute;
+        z-index: 999;
         font-size: 14px;
         font-weight: 600;
         color: #888;
@@ -361,7 +369,10 @@ const handleAnimationEnd = () =>{
         display: flex;
         align-items: center;
         justify-content: center;
-
+        position: absolute;
+        top: 0px;
+        z-index: 999;
+        width: 100%;
         .home_path_item {
             font-size: 14px;
             cursor: pointer;
@@ -389,5 +400,8 @@ const handleAnimationEnd = () =>{
 .chart {
     width: 100vw;
     height: calc(100vh - 50px);
+    position: absolute;
+    bottom: 0px;
+    z-index: 9999;
 }
 </style>
