@@ -85,11 +85,19 @@ const handleClick = (e: any, is: boolean = false) => {
         path: `${props.beginPath}${encodeURI(e.key)}`
     })
 }
-
-let directory = ref<{ expandedKeys: string[], selectedKeys: string[], treeData: any[] }>({
+interface Directory {
+    expandedKeys: string[];
+    treeData: any[];
+    selectedKeys: string[];
+    intersectionObservers: IntersectionObserver[];
+    intersectionObserverCount: number;
+}
+let directory = ref<Directory>({
     expandedKeys: [],
     treeData: [],
     selectedKeys: [],
+    intersectionObservers: [],
+    intersectionObserverCount: 0
 })
 /*
 * 将 [{name:"H1"}，{name:"H2"}] 处理为树
@@ -117,17 +125,18 @@ function transformToTree(data: any): any {
     });
     return { result, expandedKeys };
 }
-// 根据已经渲染的md element对象拿到h标签 函数计算出树 数据做目录
-const markdownBodyToDirectoryFn = () => {
+// 传入markdown-body元素 得到h标签数据和 组成的戴有标签名字的数据
+const markdownBodyToHtags = (dom: any): any => {
     let HTagsName = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
-    let markdownBody: HTMLElement = menusContent.value?.querySelector('.markdown-body');
+    let markdownBody: HTMLElement = dom?.querySelector('.markdown-body');
     if (!markdownBody) return;
     let markdownBodyChildren: Element[] = [...markdownBody.children];
     let hTags = markdownBodyChildren.filter((tag: Element) => {
         if (HTagsName.includes(tag.nodeName)) {
             return tag;
         }
-    }).map((tag: Element) => {
+    })
+    let nameList = hTags.map((tag: Element) => {
         let aTag = tag.querySelector('a');
         let aTagLink = aTag?.getAttribute('href');
         let tagText = tag.textContent;
@@ -137,7 +146,12 @@ const markdownBodyToDirectoryFn = () => {
             name: tag.nodeName,
         }
     });
-    let { result, expandedKeys } = transformToTree(hTags);
+    return { hTags, nameList };
+}
+// 根据已经渲染的md element对象拿到h标签 函数计算出树 数据做目录
+const markdownBodyToDirectoryFn = () => {
+    let { nameList } = markdownBodyToHtags(menusContent.value);
+    let { result, expandedKeys } = transformToTree(nameList);
     directory.value.treeData = result[0].children;
     directory.value.expandedKeys = expandedKeys;
 }
@@ -157,6 +171,33 @@ window.addEventListener('hashchange', hashchangeFn);
 onUnmounted(() => {
     window.removeEventListener('hashchange', hashchangeFn, true);
 })
+
+// 内容 滚动显示的目录 联动右侧的目录
+const HtagsLinkageDirectory = () => {
+    let { hTags } = markdownBodyToHtags(menusContent.value);
+    hTags.map((node: Element) => {
+        let intersectionObserver = new IntersectionObserver((_entries) => {
+            if(directory.value.intersectionObserverCount === directory.value.intersectionObservers.length){
+                if(!_entries[0].isIntersecting){
+                    let selectedKey = '#'+node.getAttribute('id');
+                    directory.value.selectedKeys.length = 0;
+                    directory.value.selectedKeys.push(selectedKey);
+                }
+            }else{
+                directory.value.intersectionObserverCount++;
+            }
+        },
+        {
+            threshold:1.0,
+            rootMargin:'0px',
+            root: menusContent.value
+        }
+        );
+        intersectionObserver.observe(node);
+        directory.value.intersectionObservers.push(intersectionObserver);
+    })
+}
+
 /**
 * 根据路由路径设置树节点选中和展开
 */
@@ -181,6 +222,8 @@ const menuToRouterPathStyle = () => {
         nextTick(() => {
             // 根据渲染的 md 文档 dom树计算目录
             markdownBodyToDirectoryFn();
+            // 内容滚动显示的目录 联动右侧的目录
+            HtagsLinkageDirectory();
         })
     } catch {
         console.error('根据root饼图进入无法设置默认选中菜单')
@@ -226,11 +269,12 @@ const hnadleTreeChange = (value: string) => {
     }
 }
 
+// 左侧 搜索按钮
 let screenVisible = ref(false);
 const handleClickScreen = () => {
     screenVisible.value = !screenVisible.value;
 }
-
+// 返回按钮
 const handleClickBack = () => {
     router.replace({
         path: '/home'
