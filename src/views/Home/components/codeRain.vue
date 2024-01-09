@@ -7,17 +7,16 @@
 <script setup lang="ts">
 import { onMounted,onUnmounted } from 'vue';
 const randomText = () => {
-    let text = 'sacomponentssacalendar'
+    let text = 'You make your brother really angry'
     return text[Math.floor(Math.random() * text.length)];
 }
 const randomColor = () => {
     let colors = [
-        '#1D5D9B5a',
-        '#75C2F65a',
-        '#F4D1605a',
-        '#19A7CE5a',
-        '#F6FA705a',
-        '#5D9C595a'
+        '#c678bb',
+        '#2d7de3',
+        '#e06c69',
+        '#98c379',
+        '#b09a66',
     ];
     return colors[Math.floor(Math.random() * colors.length)];
 }
@@ -32,7 +31,7 @@ const initRain = () => {
     let ctx = can?.getContext('2d');
 
     // 字体大小
-    const fontSize = 18;
+    const fontSize = 14;
     // 每一列的宽
     const columnWidth = fontSize;
     // 总共多少列
