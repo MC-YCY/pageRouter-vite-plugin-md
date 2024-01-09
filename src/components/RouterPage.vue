@@ -392,7 +392,7 @@ const handleClickBack = () => {
         height: 100vh;
         overflow: auto;
         box-sizing: border-box;
-        padding: 14px;
+        padding:0px 14px;
         position: relative;
         flex: 1;
         // scroll-behavior: smooth; 会影响scroll事件
