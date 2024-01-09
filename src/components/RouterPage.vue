@@ -94,15 +94,11 @@ interface Directory {
     expandedKeys: string[];
     treeData: any[];
     selectedKeys: string[];
-    intersectionObservers: IntersectionObserver[];
-    intersectionObserverCount: number;
 }
 let directory = ref<Directory>({
     expandedKeys: [],
     treeData: [],
     selectedKeys: [],
-    intersectionObservers: [],
-    intersectionObserverCount: 0
 })
 /*
 * 将 [{name:"H1"}，{name:"H2"}] 处理为树
@@ -175,19 +171,9 @@ const hashchangeFn = () => {
 window.addEventListener('hashchange', hashchangeFn);
 onUnmounted(() => {
     window.removeEventListener('hashchange', hashchangeFn, true);
-    clearIntersectionObservers();
     isInitPage.value = true;
 })
 
-// 清除obseries
-const clearIntersectionObservers = () => {
-    if (!menusContent.value) return
-    directory.value.intersectionObservers.map((inter: IntersectionObserver) => {
-        inter.unobserve(menusContent.value);
-    })
-    directory.value.intersectionObservers.length = 0;
-    directory.value.intersectionObserverCount = 0;
-}
 // 内容 滚动显示的目录 联动右侧的目录
 const HtagsLinkageDirectory = () => {
     let { hTags } = markdownBodyToHtags(menusContent.value);
