@@ -180,11 +180,16 @@ const initChart = (is: boolean = false) => {
                     length: '2%',
                     length2: '1%',
                 },
+                itemStyle:{
+                    borderRadius:6,
+                    shadowColor: '#1677ff7a',
+                    shadowBlur: 4,
+                },
                 emphasis: {
                     itemStyle: {
                         color: 'inherit',
                         shadowBlur: 10,
-                        shadowColor: '#1677ff'
+                        shadowColor: '#1677ff9a'
                     },
                     label: {
                         show: true
