@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted,onUnmounted,onActivated,onDeactivated } from 'vue';
+import { ref,onMounted,onUnmounted,onActivated,onDeactivated } from 'vue';
 const randomText = () => {
     let text = 'You make your brother really angry'
     return text[Math.floor(Math.random() * text.length)];
@@ -65,6 +65,7 @@ const initRain = () => {
         draw();
     }, 30)
 }
+let isOnActivated = ref(true);
 onMounted(() => {
     initRain();
     window.addEventListener('resize',initRain);
@@ -73,6 +74,10 @@ onUnmounted(()=>{
     window.removeEventListener('resize',initRain,true);
 })
 onActivated(()=>{
+    if(isOnActivated.value){
+        isOnActivated.value = false;
+        return;
+    }
     initRain();
     window.addEventListener('resize',initRain);
 })
