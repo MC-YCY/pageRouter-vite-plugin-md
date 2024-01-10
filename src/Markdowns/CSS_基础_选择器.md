@@ -180,7 +180,7 @@ p{
 ```
 ### 属性选择器
 属性选择器用于选择具有特定属性的元素。
-- 使用[`attribute`]来选择所有具有 `attribute` 属性的元素：
+- 使用`[attribute]`来选择所有具有 `attribute` 属性的元素：
     ```html
     <div error></div>
     ```
@@ -189,7 +189,7 @@ p{
         background:red;
     }
     ```
-- 使用 [`attribute=value`] 来选择具有指定属性及属性值的元素：
+- 使用 `[attribute=value]` 来选择具有指定属性及属性值的元素：
     ```html
     <div but-status='success'></div>
     ```
@@ -198,7 +198,7 @@ p{
         background:#f1f1f1;
     }
     ```
-- 使用 [`attribute~=value`] 来选择具有指定属性，并且该属性的多个值中包含给定值的元素：
+- 使用 `[attribute~=value]` 来选择具有指定属性，并且该属性的多个值中包含给定值的元素：
     ```html
     <div but-status='yes loading'></div>
     ```
@@ -208,7 +208,7 @@ p{
         background:#f1f1f1;
     }
     ```
-- 使用 [`attribute*=value`] 来选择具有指定属性，并且该属性的值中包含特定部分值的元素。
+- 使用 `[attribute*=value]` 来选择具有指定属性，并且该属性的值中包含特定部分值的元素。
     ```html
     <div but-status='yes loading'></div>
     ```
@@ -218,7 +218,7 @@ p{
         background:#f1f1f1;
     }
     ```
-- 使用 [`attribute^=value`] 来选择具有指定属性，并且该属性的值以给定值开头的元素。
+- 使用 `[attribute^=value]` 来选择具有指定属性，并且该属性的值以给定值开头的元素。
     ```html
     <a href='http'></a>
     <a href='#link'></a>
