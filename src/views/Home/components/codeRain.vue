@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref,onMounted,onUnmounted,onActivated,onDeactivated } from 'vue';
+import { ref, onMounted, onUnmounted, onActivated, onDeactivated } from 'vue';
 const randomText = () => {
     let text = 'You make your brother really angry'
     return text[Math.floor(Math.random() * text.length)];
@@ -20,70 +20,78 @@ const randomColor = () => {
     ];
     return colors[Math.floor(Math.random() * colors.length)];
 }
-let timer:any = null;
+let rain: any = ref({
+    width: 0,
+    height: 0,
+    columnCount: 0,
+    columnWidth: 0,
+    fontSize: 14,
+    timer: null,
+    ctx: null,
+    nextChar: []
+})
+
 const initRain = () => {
-    let canBox:any = document.querySelector('.codebox');
-    let can:any = document.querySelector('.code');
-    let width = canBox.clientWidth;
-    let height = canBox.clientHeight;
-    can.width = width;
-    can.height = height;
-    let ctx = can?.getContext('2d');
+    let canBox: any = document.querySelector('.codebox');
+    let can: any = document.querySelector('.code');
+    rain.value.width = canBox.clientWidth;
+    rain.value.height = canBox.clientHeight;
+    can.width = rain.value.width;
+    can.height = rain.value.height;
+    rain.value.ctx = can.getContext('2d');
 
-    // 字体大小
-    const fontSize = 14;
-    // 每一列的宽
-    const columnWidth = fontSize;
-    // 总共多少列
-    const columnCount = Math.ceil(width / columnWidth);
+    rain.value.columnWidth = rain.value.fontSize;
+    rain.value.columnCount = Math.ceil(rain.value.width / rain.value.columnWidth);
+    rain.value.nextChar = new Array(rain.value.columnCount).fill(0);
+}
 
-    // 用于表示每一列到第几个字符
-    const nextChar = new Array(columnCount).fill(0);
-
-    const draw = () => {
-        // 每次画之前 刷一层透明白色达到渐变的效果
-        ctx.fillStyle = 'rgba(255,255,255,0.1)';
-        ctx.fillRect(0, 0, width, height);
-        for (let i = 0; i < columnCount; i++) {
-            ctx.fillStyle = randomColor();
-            const char = randomText();
-            ctx.font = `${fontSize}px 'Roboto Mono'`;
-            let s = nextChar[i];
-            const x = i * columnWidth;
-            const y = (s + 1) * fontSize;
-            ctx.fillText(char, x, y);
-            // 超出下一个的位置超出容器高度归零； 使用逻辑与如果超了；开始随机的分段加入随机判断归零
-            if (y > height && Math.random() > 0.99) {
-                nextChar[i] = 0;
-            } else {
-                nextChar[i]++;
-            }
+const drawRain = () => {
+    const { ctx ,width,height,columnCount,fontSize,columnWidth,nextChar} = rain.value;
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.fillRect(0, 0, width, height);
+    for (let i = 0; i < columnCount; i++) {
+        ctx.fillStyle = randomColor();
+        const char = randomText();
+        ctx.font = `${fontSize}px 'Roboto Mono'`;
+        let s = nextChar[i];
+        const x = i * columnWidth;
+        const y = (s + 1) * fontSize;
+        ctx.fillText(char, x, y);
+        // 超出下一个的位置超出容器高度归零； 使用逻辑与如果超了；开始随机的分段加入随机判断归零
+        if (y > height && Math.random() > 0.99) {
+            nextChar[i] = 0;
+        } else {
+            nextChar[i]++;
         }
     }
-    clearInterval(timer);
-    timer = setInterval(() => {
-        draw();
-    }, 30)
 }
+const play = () =>{
+    rain.value.timer = setInterval(drawRain, 30);
+}
+const suspend = () =>{
+    clearInterval(rain.value.timer);
+}
+
 let isOnActivated = ref(true);
 onMounted(() => {
     initRain();
-    window.addEventListener('resize',initRain);
+    play();
+    window.addEventListener('resize', initRain);
 })
-onUnmounted(()=>{
-    window.removeEventListener('resize',initRain,true);
+onUnmounted(() => {
+    window.removeEventListener('resize', initRain, true);
 })
-onActivated(()=>{
-    if(isOnActivated.value){
+onActivated(() => {
+    if (isOnActivated.value) {
         isOnActivated.value = false;
         return;
     }
-    initRain();
-    window.addEventListener('resize',initRain);
+    play();
+    window.addEventListener('resize', initRain);
 })
-onDeactivated(()=>{
-    clearInterval(timer);
-    window.removeEventListener('resize',initRain,true);
+onDeactivated(() => {
+    suspend();
+    window.removeEventListener('resize', initRain, true);
 })
 </script>
 
