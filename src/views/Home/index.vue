@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import codeRain from './components/codeRain.vue';
-import { onMounted, ref ,onUnmounted} from 'vue';
+import { onMounted, ref, onUnmounted } from 'vue';
 import * as echarts from 'echarts';
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -51,7 +51,7 @@ const computedChartData = (_d: any) => {
         }
     })
 }
-let colors:string[] = [
+let colors: string[] = [
     '#FF9843',
     '#FFDD95',
     '#86A7FC',
@@ -98,25 +98,35 @@ let colors:string[] = [
 
     '#A2C579'
 ]
+// is 用来判断 内容页面返回后是否重新渲染
 const initChart = (is: boolean = false) => {
     let myChart = echarts.init(chart.value);
-    let data = computedChartData(chartData);
-
-    data.map((item: any) => {
-        item['name'] = '🙂' + item.name;
-        item['label'] = {
-            formatter: (v: any) => {
-                return `{text|${v.name}}`
-            },
-            rich: {
-                text: {
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#666",      //颜色区分用于 getZr的事件判断
+    let data = [];
+    if (is) {
+        data = pathLog.value[pathLog.value.length - 1].data;
+    } else {
+        data = computedChartData(chartData)
+        data.map((item: any) => {
+            item['name'] = '🙂' + item.name;
+            item['label'] = {
+                formatter: (v: any) => {
+                    return `{text|${v.name}}`
                 },
+                rich: {
+                    text: {
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#666",      //颜色区分用于 getZr的事件判断
+                    },
+                }
             }
-        }
-    })
+        })
+        pathLog.value.push({
+            path: 'root',
+            computedDataLabel_k: 'root',
+            data
+        });
+    }
     let option = {
         color: [
             ...colors,
@@ -184,19 +194,7 @@ const initChart = (is: boolean = false) => {
             }
         ]
     };
-    if (is) {
-        myChart?.dispose();
-        myChart = echarts.init(chart.value)
-        option.series[0].data = pathLog.value[pathLog.value.length - 1].data;
-        myChart.setOption(option);
-    } else {
-        pathLog.value.push({
-            path: 'root',
-            computedDataLabel_k: 'root',
-            data
-        });
-        myChart.setOption(option);
-    }
+    myChart.setOption(option);
     chartEventMethods(myChart);
 }
 const chartEventMethods = (myChart: any) => {
@@ -290,7 +288,7 @@ const handleClickPathItem = (item: any, key: number) => {
         ]
     })
 }
-const resizeEcharts = () =>{
+const resizeEcharts = () => {
     let myChart = echarts.getInstanceByDom(chart.value);
     if (myChart) {
         myChart.resize();
@@ -298,18 +296,18 @@ const resizeEcharts = () =>{
 }
 onMounted(() => {
     initChart();
-    window.addEventListener('resize',resizeEcharts);
+    window.addEventListener('resize', resizeEcharts);
 })
-onUnmounted(()=>{
-    window.removeEventListener('resize',resizeEcharts,true);
+onUnmounted(() => {
+    window.removeEventListener('resize', resizeEcharts, true);
 })
 router.beforeEach((_to, _form) => {
     if (_to.path === '/home') {
         let myChart = echarts.getInstanceByDom(chart.value);
         myChart?.dispose();
-        chart.value.removeAttribute('style')
-        chart.value.removeAttribute('_echarts_instance_')
-        chart.value.removeAttribute('aria-label')
+        chart.value.removeAttribute('style');
+        chart.value.removeAttribute('_echarts_instance_');
+        chart.value.removeAttribute('aria-label');
         requestAnimationFrame(() => {
             initChart(true);
         })
@@ -318,7 +316,7 @@ router.beforeEach((_to, _form) => {
 
 
 let isInitShowTip = ref(true);
-const handleAnimationEnd = () =>{
+const handleAnimationEnd = () => {
     isInitShowTip.value = false;
 }
 </script>
@@ -338,7 +336,8 @@ const handleAnimationEnd = () =>{
     width: 100%;
     height: 100vh;
     position: relative;
-    .home_code{
+
+    .home_code {
         position: absolute;
         left: 0px;
         top: 0px;
@@ -349,43 +348,50 @@ const handleAnimationEnd = () =>{
         z-index: 999;
         font-size: 14px;
         font-weight: 600;
-        color: #888;
-        top: 50px;
-        left: 50%;
-        transform: translateX(-50%);
-        animation: hideTip ease-in 3s forwards;
+        color: #666;
+        top: 10px;
+        left: 10px;
+        animation: hideTip ease-in 5s forwards;
         display: flex;
         flex-wrap: wrap;
 
         nav {
             width: 100%;
-            justify-content: center;
-            text-align: center;
         }
     }
 
     .home_path {
-        height: 50px;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         position: absolute;
-        top: 0px;
+        left: 50%;
+        transform: translateX(-50%);
+        top: calc(50px - 32px);
         z-index: 999;
-        width: 100%;
+        background-color: white;
+        height: 32px;
+        padding: 0px 6px;
+        border-radius: 6px;
+        box-shadow: 0px 0px 8px #1677ff;
+
         .home_path_item {
+            vertical-align: top;
             font-size: 14px;
             cursor: pointer;
             transition: all .3s linear;
             padding: 0px 2px;
             border-radius: 4px;
             font-weight: 600;
-            background-color: white;
             padding-bottom: 2px;
         }
 
         .home_path_item:hover {
             background-color: #f0f0f0;
+        }
+
+        button {
+            font-weight: 600;
         }
     }
 
@@ -405,5 +411,4 @@ const handleAnimationEnd = () =>{
     position: absolute;
     bottom: 0px;
     z-index: 9999;
-}
-</style>
+}</style>
