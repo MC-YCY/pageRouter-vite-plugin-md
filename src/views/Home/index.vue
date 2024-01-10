@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import codeRain from './components/codeRain.vue';
-import { onMounted, ref, onUnmounted } from 'vue';
+import { onMounted, ref, onActivated, onDeactivated } from 'vue';
 import * as echarts from 'echarts';
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -195,6 +195,7 @@ const initChart = (is: boolean = false) => {
         ]
     };
     myChart.setOption(option);
+    window.addEventListener('resize', resizeEcharts);
     chartEventMethods(myChart);
 }
 const chartEventMethods = (myChart: any) => {
@@ -294,26 +295,28 @@ const resizeEcharts = () => {
         myChart.resize();
     }
 }
+// 用来判断是否第一次触发 onActivated 而渲染echarts；和onMounted冲突所加
+let isOnActivated = ref(true);
 onMounted(() => {
     initChart();
-    window.addEventListener('resize', resizeEcharts);
 })
-onUnmounted(() => {
+onDeactivated(() => {
     window.removeEventListener('resize', resizeEcharts, true);
 })
-router.beforeEach((_to, _form) => {
-    if (_to.path === '/home') {
-        let myChart = echarts.getInstanceByDom(chart.value);
-        myChart?.dispose();
-        chart.value.removeAttribute('style');
-        chart.value.removeAttribute('_echarts_instance_');
-        chart.value.removeAttribute('aria-label');
-        requestAnimationFrame(() => {
-            initChart(true);
-        })
+onActivated(() => {
+    if (isOnActivated.value) {
+        isOnActivated.value = false;
+        return;
     }
+    let myChart = echarts.getInstanceByDom(chart.value);
+    myChart?.dispose();
+    chart.value.removeAttribute('style');
+    chart.value.removeAttribute('_echarts_instance_');
+    chart.value.removeAttribute('aria-label');
+    requestAnimationFrame(() => {
+        initChart(true);
+    })
 })
-
 
 let isInitShowTip = ref(true);
 const handleAnimationEnd = () => {
@@ -411,4 +414,5 @@ const handleAnimationEnd = () => {
     position: absolute;
     bottom: 0px;
     z-index: 9999;
-}</style>
+}
+</style>
