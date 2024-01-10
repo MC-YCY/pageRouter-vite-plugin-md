@@ -329,7 +329,9 @@ const handleAnimationEnd = () => {
     0% {
         opacity: 1;
     }
-
+    80%{
+        opacity: 1;
+    }
     100% {
         opacity: 0;
     }
@@ -351,15 +353,15 @@ const handleAnimationEnd = () => {
         z-index: 999;
         font-size: 14px;
         font-weight: 600;
-        color: #666;
+        color: #1677ff;
         top: 10px;
         left: 10px;
         animation: hideTip ease-in 5s forwards;
-        display: flex;
-        flex-wrap: wrap;
 
         nav {
             width: 100%;
+            height: 20px;
+            line-height: 20px;
         }
     }
 

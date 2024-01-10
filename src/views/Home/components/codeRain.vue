@@ -1,16 +1,16 @@
 <template>
-    <div class="codebox">
-        <canvas class="code"></canvas>
+    <div class="codebox" ref="codeBoxRef">
+        <canvas class="code" ref="codeCavans"></canvas>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, onActivated, onDeactivated } from 'vue';
-const randomText = () => {
+const randomText = ():string => {
     let text = 'You make your brother really angry'
     return text[Math.floor(Math.random() * text.length)];
 }
-const randomColor = () => {
+const randomColor = (): string => {
     let colors = [
         '#c678bb7a',
         '#2d7de37a',
@@ -20,25 +20,37 @@ const randomColor = () => {
     ];
     return colors[Math.floor(Math.random() * colors.length)];
 }
-let rain: any = ref({
+interface Rain {
+    width: number;
+    height: number;
+    columnCount: number;
+    columnWidth: number;
+    fontSize: number;
+    timer: any;
+    ctx: CanvasRenderingContext2D | null;
+    nextChar: number[];
+}
+let rain = ref<Rain>({
     width: 0,
     height: 0,
     columnCount: 0,
     columnWidth: 0,
     fontSize: 14,
     timer: null,
-    ctx: null,
+    ctx:null,
     nextChar: []
 })
 
+let codeBoxRef = ref();
+let codeCavans = ref();
 const initRain = () => {
-    let canBox: any = document.querySelector('.codebox');
-    let can: any = document.querySelector('.code');
+    let canBox: HTMLDivElement = codeBoxRef.value;
+    let can: HTMLCanvasElement = codeCavans.value;
     rain.value.width = canBox.clientWidth;
     rain.value.height = canBox.clientHeight;
     can.width = rain.value.width;
     can.height = rain.value.height;
-    rain.value.ctx = can.getContext('2d');
+    rain.value.ctx = can?.getContext('2d');
 
     rain.value.columnWidth = rain.value.fontSize;
     rain.value.columnCount = Math.ceil(rain.value.width / rain.value.columnWidth);
@@ -47,6 +59,7 @@ const initRain = () => {
 
 const drawRain = () => {
     const { ctx ,width,height,columnCount,fontSize,columnWidth,nextChar} = rain.value;
+    if(!ctx) return;
     ctx.fillStyle = 'rgba(255,255,255,0.1)';
     ctx.fillRect(0, 0, width, height);
     for (let i = 0; i < columnCount; i++) {
