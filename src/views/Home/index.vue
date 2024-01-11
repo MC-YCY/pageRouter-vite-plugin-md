@@ -20,6 +20,7 @@
 </template>
 
 <script lang="ts" setup>
+import colors from './colors';
 import codeRain from './components/codeRain.vue';
 import { onMounted, ref, onActivated, onDeactivated } from 'vue';
 import * as echarts from 'echarts';
@@ -51,53 +52,6 @@ const computedChartData = (_d: any) => {
         }
     })
 }
-let colors: string[] = [
-    '#FF9843',
-    '#FFDD95',
-    '#86A7FC',
-    '#3468C0',
-
-    '#D9EDBF',
-    '#FFB996',
-    '#FFCF81',
-    '#FDFFAB',
-
-    '#80BCBD',
-    '#AAD9BB',
-    '#D5F0C1',
-    '#F9F7C9',
-
-    '#7BD3EA',
-    '#A1EEBD',
-    '#F6F7C4',
-    '#F6D6D6',
-
-    '#FFF78A',
-    '#FFE382',
-    '#FFC47E',
-    '#FFAD84',
-
-    '#7071E8',
-    '#C683D7',
-    '#ED9ED6',
-    '#FFC7C7',
-
-    '#FF8F8F',
-    '#EEF296',
-    '#9ADE7B',
-    '#508D69',
-
-    '#FFC5C5',
-    '#FFEBD8',
-    '#C7DCA7',
-    '#89B9AD',
-
-    '#D0A2F7',
-
-    '#39A7FF',
-
-    '#A2C579'
-]
 // is 用来判断 内容页面返回后是否重新渲染
 const initChart = (is: boolean = false) => {
     let myChart = echarts.init(chart.value);
@@ -128,45 +82,7 @@ const initChart = (is: boolean = false) => {
         });
     }
     let option = {
-        color: [
-            ...colors,
-            '#a5f1e9',
-            '#7fe9de',
-            '#80bcbd',
-            '#aad9bb',
-            '#d5f0c1',
-            '#f9f7c9',
-            '#756ab6',
-            '#ac87c5',
-            '#e0aed0',
-            '#ffe5e5',
-            '#7bd3ea',
-            '#ff90bc',
-            '#8acdd7',
-            '#ffc5c5',
-            '#ffebd8',
-            '#ff8080',
-            '#00a9ff',
-            '#89cff3',
-            '#a0e9ff',
-            '#cdf5fd',
-            '#45ffca',
-            '#feffac',
-            '#ffb6d9',
-            '#d67bff',
-            '#ffacac',
-            '#ffbfa9',
-            '#ffebb4',
-            '#fbffb1',
-            '#b9f3e4',
-            '#ea8fea',
-            '#ffaacf',
-            '#f6e6c2',
-            '#cde990',
-            '#aacb73',
-            '#eac7c7',
-            '#f8f988'
-        ],
+        color: colors,
         series: [
             {
                 type: 'pie',
