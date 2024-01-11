@@ -19,6 +19,18 @@ import code from '@yankeeinlondon/code-builder';
 function pathResolve(dir: string) {
   return resolve(process.cwd(), '.', dir)
 }
+
+// 讲 字符出 通过encodeURI 转义后 字符串 处理为符合css选择器命名标准的字符串
+// 采用讲 # 去掉 % 
+// 后面内容滚动 采用此函数获取dom Rect信息
+const processStringConformCss = (inputString:string) => {
+  // 去掉开头的#
+  let step1 = inputString.replace(/^#/, '');
+  // 将%转换为_
+  let step12 = step1.replace(/%/g, '');
+  let result = step12.replace(/[^a-zA-Z0-9_]/g, '').replace(/^[^a-zA-Z]+/, '');
+  return result;
+}
 export default defineConfig({
   plugins: [
     vue({
@@ -32,7 +44,9 @@ export default defineConfig({
         typographer: true,
       },
       markdownItSetup(md) {
-        md.use(mita, { permalink: true, permalinkBefore: true, permalinkSymbol: '#' })
+        md.use(mita, { permalink: true, permalinkBefore: true, permalinkSymbol: '#' ,slugify:(e)=>{
+          return processStringConformCss(encodeURI(e))
+        }})
         md.use(mitp);
       },
     }),

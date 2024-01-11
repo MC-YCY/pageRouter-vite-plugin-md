@@ -26,7 +26,7 @@
                     style="width:100%" mode="inline" :items="MenuSelect.items" @click="handleClick"></a-menu>
             </div>
         </div>
-        <div class="menus_content" ref="menusContent">
+        <div class="menus_content" @scroll="HtagsLinkageDirectoryFn" ref="menusContent">
             <router-view v-slot="{ Component }">
                 <keep-alive>
                     <component :is="Component" v-if="route.meta.keepAlive" :key="route.meta.key" />
@@ -35,11 +35,11 @@
             </router-view>
         </div>
         <div class="toc-container" ref="refDirectory">
-            <a-tree @select="handleTreeChange" v-model:expandedKeys="directory.expandedKeys"
+            <a-tree  v-model:expandedKeys="directory.expandedKeys"
                 v-model:selectedKeys="directory.selectedKeys" show-line :tree-data="directory.treeData">
                 <template #switcherIcon><down-outlined /></template>
                 <template #title="{ key: _key, title }">
-                    <span :id="processStringConformCss(_key)">
+                    <span :class="processStringConformCss(_key)" @click.stop="handleTreeChange(_key)">
                         {{ title.split('#')[1].trim() }}
                     </span>
                 </template>
@@ -88,7 +88,7 @@ const handleClick = (e: any, is: boolean = false) => {
     directory.value.selectedKeys.length = 0;
     router.replace({
         path: `${props.beginPath}${encodeURI(e.key)}`
-    })
+    });
 }
 interface Directory {
     expandedKeys: string[];
@@ -157,32 +157,26 @@ const markdownBodyToDirectoryFn = () => {
     directory.value.expandedKeys = expandedKeys;
 }
 // tree 选中事件处理
-const handleTreeChange = (e: string[]) => {
-    if (e.length) {
-        window.location.href = route.path + e[0];
-    }
+const handleTreeChange = (key:string) => {
+    nextTick(()=>{
+        if (!key) return;
+        directory.value.selectedKeys.length = 0;
+        directory.value.selectedKeys.push(key);
+        window.location.href = route.path + key;
+    })
 }
-// 监听 window.location.hash 改变事件
-const hashchangeFn = () => {
-    let activeTitle = window.location.hash;
-    directory.value.selectedKeys.length = 0;
-    directory.value.selectedKeys.push(activeTitle);
-    scrollDirectory();
-}
-window.addEventListener('hashchange', hashchangeFn);
 onUnmounted(() => {
-    window.removeEventListener('hashchange', hashchangeFn, true);
     isInitPage.value = true;
 })
 
 // 讲 字符出 通过encodeURI 转义后 字符串 处理为符合css选择器命名标准的字符串
 // 采用讲 # 去掉 % 转换为 _ 开头的符号去掉以字母开头
 // 后面内容滚动 采用此函数获取dom Rect信息
-const processStringConformCss = (inputString:string) => {
+const processStringConformCss = (inputString: string) => {
     // 去掉开头的#
     let step1 = inputString.replace(/^#/, '');
     // 将%转换为_
-    let step12 = step1.replace(/%/g, '_');
+    let step12 = step1.replace(/%/g, '');
     let result = step12.replace(/[^a-zA-Z0-9_]/g, '').replace(/^[^a-zA-Z]+/, '');
     return result;
 }
@@ -190,37 +184,35 @@ let refDirectory = ref();
 const scrollDirectory = () => {
     if (!directory.value.selectedKeys.length) return;
     let queryStr = processStringConformCss(directory.value.selectedKeys[0]);
-    let dom = document.querySelector('#'+queryStr);
+    let dom = document.querySelector('.' + queryStr);
     let refDirectoryRect = refDirectory.value?.getClientRects()[0];
     let Rects = dom?.getClientRects();
     let Rect = null;
-    if(Rects && Rects.length) Rect = Rects[0];
-    if(!Rect) return;
-    if(!refDirectoryRect) return;
-    if (Rect.top> refDirectoryRect.height) {
-        refDirectory.value.scrollTop =  refDirectory.value.scrollTop+refDirectoryRect.height;
+    if (Rects && Rects.length) Rect = Rects[0];
+    if (!Rect) return;
+    if (!refDirectoryRect) return;
+    if (Rect.top > refDirectoryRect.height) {
+        refDirectory.value.scrollTop = refDirectory.value.scrollTop + refDirectoryRect.height;
     }
-    if(Rect.top<0){
-        refDirectory.value.scrollTop =  refDirectory.value.scrollTop-refDirectoryRect.height;
+    if (Rect.top < 0) {
+        refDirectory.value.scrollTop = refDirectory.value.scrollTop - refDirectoryRect.height;
     }
 }
 
 // 内容 滚动显示的目录 联动右侧的目录
-const HtagsLinkageDirectory = () => {
+const HtagsLinkageDirectoryFn = (_event: Event) => {
     let { hTags } = markdownBodyToHtags(menusContent.value);
-    menusContent.value.addEventListener('scroll', (_event: Event) => {
-        let scrollPosition = menusContent.value.scrollTop
-        hTags.map((node: HTMLDivElement) => {
-            let sectionTop = node.offsetTop;
-            let sectionHeight = node.offsetHeight;
-            if (scrollPosition >= sectionTop - sectionHeight / 3 &&
-                scrollPosition < sectionTop + sectionHeight - sectionHeight / 3) {
-                let selectedKey = '#' + node.getAttribute('id');
-                directory.value.selectedKeys.length = 0;
-                directory.value.selectedKeys.push(selectedKey);
-                scrollDirectory();
-            }
-        })
+    let scrollPosition = menusContent.value.scrollTop
+    hTags.map((node: HTMLDivElement) => {
+        let sectionTop = node.offsetTop;
+        let sectionHeight = node.offsetHeight;
+        if (scrollPosition >= sectionTop - sectionHeight / 3 &&
+            scrollPosition < sectionTop + sectionHeight - sectionHeight / 3) {
+            let selectedKey = '#' + node.getAttribute('id');
+            directory.value.selectedKeys.length = 0;
+            directory.value.selectedKeys.push(selectedKey);
+            scrollDirectory();
+        }
     })
 }
 
@@ -248,8 +240,7 @@ const menuToRouterPathStyle = () => {
         nextTick(() => {
             // 根据渲染的 md 文档 dom树计算目录
             markdownBodyToDirectoryFn();
-            // 内容滚动显示的目录 联动右侧的目录
-            HtagsLinkageDirectory();
+
         })
     } catch {
         // 如果是通过 😊进入同样设置为 初始表示没有进入过菜单中的某一个
@@ -263,6 +254,11 @@ let isInitPage = ref(true)
 onMounted(() => {
     isInitPage.value = false;
     menuToRouterPathStyle();
+
+    // 锚点滚动位置
+    if(!route.hash) return;
+    let sc = menusContent.value.querySelector(route.hash);
+    menusContent.value.scrollTop = sc.getClientRects()[0].top;
 })
 router.afterEach((_to, _form, _next) => {
     if (!isInitPage.value && _to.path != '/home') {
@@ -270,7 +266,6 @@ router.afterEach((_to, _form, _next) => {
         menuToRouterPathStyle();
     }
 })
-
 let treeValue = ref(undefined);
 /*
 * 数组转树形结构
