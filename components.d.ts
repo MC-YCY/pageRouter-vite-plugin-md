@@ -14,7 +14,7 @@ declare module 'vue' {
     ATree: typeof import('ant-design-vue/es')['Tree']
     ATreeSelect: typeof import('ant-design-vue/es')['TreeSelect']
     RouterLink: typeof import('vue-router')['RouterLink']
-    RouterPage: typeof import('./src/components/RouterPage.vue')['default']
+    RouterPage: typeof import('./src/components/RouterPage/index.vue')['default']
     RouterView: typeof import('vue-router')['RouterView']
   }
 }

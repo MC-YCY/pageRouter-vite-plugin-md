@@ -187,7 +187,7 @@ const scrollDirectory = () => {
     let dom = document.querySelector('.' + queryStr);
     let refDirectoryRect = refDirectory.value?.getClientRects()[0];
     let Rects = dom?.getClientRects();
-    let Rect = null;
+    let Rect:any = null;
     if (Rects && Rects.length) Rect = Rects[0];
     if (!Rect) return;
     if (!refDirectoryRect) return;

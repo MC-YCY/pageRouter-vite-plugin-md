@@ -3,6 +3,6 @@
 </template>
 
 <script lang="ts" setup>
-import RouterPage from '/@/components/RouterPage.vue';
+import RouterPage from '/@/components/RouterPage/index.vue';
 import { Question } from '/@/router/mds';
 </script>
