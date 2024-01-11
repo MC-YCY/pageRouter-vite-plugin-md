@@ -26,6 +26,9 @@
                     style="width:100%" mode="inline" :items="MenuSelect.items" @click="handleClick"></a-menu>
             </div>
         </div>
+        <div class="example" v-show="loading">
+            <a-spin size="large"/>
+        </div>
         <div class="menus_content" @scroll="HtagsLinkageDirectoryFn" ref="menusContent">
             <router-view v-slot="{ Component }">
                 <keep-alive>
@@ -35,8 +38,8 @@
             </router-view>
         </div>
         <div class="toc-container" ref="refDirectory">
-            <a-tree  v-model:expandedKeys="directory.expandedKeys"
-                v-model:selectedKeys="directory.selectedKeys" show-line :tree-data="directory.treeData">
+            <a-tree v-model:expandedKeys="directory.expandedKeys" v-model:selectedKeys="directory.selectedKeys" show-line
+                :tree-data="directory.treeData">
                 <template #switcherIcon><down-outlined /></template>
                 <template #title="{ key: _key, title }">
                     <span :class="processStringConformCss(_key)" @click.stop="handleTreeChange(_key)">
@@ -74,6 +77,7 @@ let MenuSelect = ref<{ openKeys: string[], selectedKeys: string[], items: any[] 
     items: props.items
 })
 
+let loading = ref(true);
 /*
 * 菜单点击事件处理
 * @param e 点击事件
@@ -83,12 +87,13 @@ let menusContent: any = ref(null);
 const handleClick = (e: any, is: boolean = false) => {
     if (!is) treeValue.value = undefined;
     menusContent.value.scrollTop = 0;
-    directory.value.treeData.length = 0;
-    directory.value.expandedKeys.length = 0;
-    directory.value.selectedKeys.length = 0;
+    // directory.value.treeData.length = 0;
+    // directory.value.expandedKeys.length = 0;
+    // directory.value.selectedKeys.length = 0;
     router.replace({
         path: `${props.beginPath}${encodeURI(e.key)}`
     });
+    loading.value = true;
 }
 interface Directory {
     expandedKeys: string[];
@@ -157,8 +162,8 @@ const markdownBodyToDirectoryFn = () => {
     directory.value.expandedKeys = expandedKeys;
 }
 // tree 选中事件处理
-const handleTreeChange = (key:string) => {
-    nextTick(()=>{
+const handleTreeChange = (key: string) => {
+    nextTick(() => {
         if (!key) return;
         directory.value.selectedKeys.length = 0;
         directory.value.selectedKeys.push(key);
@@ -187,7 +192,7 @@ const scrollDirectory = () => {
     let dom = document.querySelector('.' + queryStr);
     let refDirectoryRect = refDirectory.value?.getClientRects()[0];
     let Rects = dom?.getClientRects();
-    let Rect:any = null;
+    let Rect: any = null;
     if (Rects && Rects.length) Rect = Rects[0];
     if (!Rect) return;
     if (!refDirectoryRect) return;
@@ -252,11 +257,13 @@ const menuToRouterPathStyle = () => {
 // 进入页面后面的跳转 根据路由守卫触发
 let isInitPage = ref(true)
 onMounted(() => {
+    loading.value = false;
+
     isInitPage.value = false;
     menuToRouterPathStyle();
 
     // 锚点滚动位置
-    if(!route.hash) return;
+    if (!route.hash) return;
     let sc = menusContent.value.querySelector(route.hash);
     menusContent.value.scrollTop = sc.getClientRects()[0].top;
 })
@@ -264,6 +271,7 @@ router.afterEach((_to, _form, _next) => {
     if (!isInitPage.value && _to.path != '/home') {
         console.log('no init');
         menuToRouterPathStyle();
+        loading.value = false;
     }
 })
 let treeValue = ref(undefined);
@@ -477,6 +485,22 @@ const handleClickBack = () => {
                 }
             }
         }
+    }
+
+    .example {
+        position: absolute;
+        background: rgba(255,255,255,.5);
+        border-radius: 4px;
+        margin-bottom: 20px;
+        width:calc(100vw - 260px);
+        height:100vh;
+        pointer-events: none;
+        z-index:999;
+        right:0px;
+        top:0px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
     }
 }
 </style>
