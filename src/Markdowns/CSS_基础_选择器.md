@@ -709,7 +709,7 @@ a:active{
         display:flex;
     }
     .firstChildDemo div{
-        width:200px;
+        width:240px;
         background:#1677ff;
         height:32px;
         display:flex;
@@ -738,7 +738,7 @@ a:active{
         display:flex;
     }
     .firstChildDemo div{
-        width:260px;
+        width:240px;
         background:#1677ff;
         height:32px;
         display:flex;
@@ -769,7 +769,7 @@ a:active{
         display:flex;
     }
     .lastChildDemo div{
-        width:200px;
+        width:240px;
         background:#1677ff;
         height:32px;
         display:flex;
@@ -798,7 +798,7 @@ a:active{
         display:flex;
     }
     .lastChildDemo div{
-        width:200px;
+        width:240px;
         background:#1677ff;
         height:32px;
         display:flex;
