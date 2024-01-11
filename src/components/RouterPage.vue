@@ -34,12 +34,12 @@
                 <component :is="Component" v-if="!route.meta.keepAlive" />
             </router-view>
         </div>
-        <div class="toc-container">
+        <div class="toc-container" ref="refDirectory">
             <a-tree @select="handleTreeChange" v-model:expandedKeys="directory.expandedKeys"
                 v-model:selectedKeys="directory.selectedKeys" show-line :tree-data="directory.treeData">
                 <template #switcherIcon><down-outlined /></template>
                 <template #title="{ key: _key, title }">
-                    <span :id="_key">
+                    <span :id="processStringConformCss(_key)">
                         {{ title.split('#')[1].trim() }}
                     </span>
                 </template>
@@ -167,6 +167,7 @@ const hashchangeFn = () => {
     let activeTitle = window.location.hash;
     directory.value.selectedKeys.length = 0;
     directory.value.selectedKeys.push(activeTitle);
+    scrollDirectory();
 }
 window.addEventListener('hashchange', hashchangeFn);
 onUnmounted(() => {
@@ -174,19 +175,50 @@ onUnmounted(() => {
     isInitPage.value = true;
 })
 
+// 讲 字符出 通过encodeURI 转义后 字符串 处理为符合css选择器命名标准的字符串
+// 采用讲 # 去掉 % 转换为 _ 开头的符号去掉以字母开头
+// 后面内容滚动 采用此函数获取dom Rect信息
+const processStringConformCss = (inputString:string) => {
+    // 去掉开头的#
+    let step1 = inputString.replace(/^#/, '');
+    // 将%转换为_
+    let step12 = step1.replace(/%/g, '_');
+    let result = step12.replace(/[^a-zA-Z0-9_]/g, '').replace(/^[^a-zA-Z]+/, '');
+    return result;
+}
+let refDirectory = ref();
+const scrollDirectory = () => {
+    if (!directory.value.selectedKeys.length) return;
+    let queryStr = processStringConformCss(directory.value.selectedKeys[0]);
+    let dom = document.querySelector('#'+queryStr);
+    let refDirectoryRect = refDirectory.value?.getClientRects()[0];
+    let Rects = dom?.getClientRects();
+    let Rect = null;
+    if(Rects && Rects.length) Rect = Rects[0];
+    if(!Rect) return;
+    if(!refDirectoryRect) return;
+    if (Rect.top> refDirectoryRect.height) {
+        refDirectory.value.scrollTop =  refDirectory.value.scrollTop+refDirectoryRect.height;
+    }
+    if(Rect.top<0){
+        refDirectory.value.scrollTop =  refDirectory.value.scrollTop-refDirectoryRect.height;
+    }
+}
+
 // 内容 滚动显示的目录 联动右侧的目录
 const HtagsLinkageDirectory = () => {
     let { hTags } = markdownBodyToHtags(menusContent.value);
     menusContent.value.addEventListener('scroll', (_event: Event) => {
         let scrollPosition = menusContent.value.scrollTop
-        hTags.map((node:HTMLDivElement) => {
+        hTags.map((node: HTMLDivElement) => {
             let sectionTop = node.offsetTop;
             let sectionHeight = node.offsetHeight;
             if (scrollPosition >= sectionTop - sectionHeight / 3 &&
                 scrollPosition < sectionTop + sectionHeight - sectionHeight / 3) {
-                    let selectedKey = '#' + node.getAttribute('id');
-                    directory.value.selectedKeys.length = 0;
-                    directory.value.selectedKeys.push(selectedKey);
+                let selectedKey = '#' + node.getAttribute('id');
+                directory.value.selectedKeys.length = 0;
+                directory.value.selectedKeys.push(selectedKey);
+                scrollDirectory();
             }
         })
     })
@@ -392,7 +424,7 @@ const handleClickBack = () => {
         height: 100vh;
         overflow: auto;
         box-sizing: border-box;
-        padding:0px 14px;
+        padding: 0px 14px;
         position: relative;
         flex: 1;
         // scroll-behavior: smooth; 会影响scroll事件
