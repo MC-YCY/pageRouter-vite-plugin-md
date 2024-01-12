@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="example" v-show="loading">
-            <a-spin size="large"/>
+            <a-spin size="large" />
         </div>
         <div class="menus_content" @scroll="HtagsLinkageDirectoryFn" ref="menusContent">
             <router-view v-slot="{ Component }">
@@ -267,7 +267,7 @@ onMounted(() => {
     menusContent.value.scrollTop = sc.getClientRects()[0].top;
 })
 router.afterEach((_to, _form, _next) => {
-    if (!isInitPage.value) {
+    if (!isInitPage.value && _to.path != '/home') {
         menuToRouterPathStyle();
     }
     loading.value = false;
@@ -487,18 +487,18 @@ const handleClickBack = () => {
 
     .example {
         position: absolute;
-        background: rgba(255,255,255,.5);
+        background: rgba(255, 255, 255, .5);
         border-radius: 4px;
         margin-bottom: 20px;
-        width:calc(100vw - 260px);
-        height:100vh;
+        width: calc(100vw - 260px);
+        height: 100vh;
         pointer-events: none;
-        z-index:999;
-        right:0px;
-        top:0px;
-        display:flex;
-        justify-content:center;
-        align-items:center;
+        z-index: 999;
+        right: 0px;
+        top: 0px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup>
     import {ref} from 'vue';
-    let a = ref('123')
+    let a = ref('message')
 </script>
 {{a}}
 # Css123
