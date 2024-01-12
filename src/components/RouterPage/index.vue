@@ -249,7 +249,6 @@ const menuToRouterPathStyle = () => {
         })
     } catch {
         // 如果是通过 😊进入同样设置为 初始表示没有进入过菜单中的某一个
-        isInitPage.value = true;
         console.error('根据root饼图进入无法设置默认选中菜单')
     }
 }
@@ -268,11 +267,10 @@ onMounted(() => {
     menusContent.value.scrollTop = sc.getClientRects()[0].top;
 })
 router.afterEach((_to, _form, _next) => {
-    if (!isInitPage.value && _to.path != '/home') {
-        console.log('no init');
+    if (!isInitPage.value) {
         menuToRouterPathStyle();
-        loading.value = false;
     }
+    loading.value = false;
 })
 let treeValue = ref(undefined);
 /*
