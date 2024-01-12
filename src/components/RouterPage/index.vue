@@ -38,7 +38,9 @@
             </router-view>
         </div>
         <div class="toc-container" ref="refDirectory">
-            <a-tree v-model:expandedKeys="directory.expandedKeys" v-model:selectedKeys="directory.selectedKeys" show-line
+            <a-tree
+            :show-icon="true"
+            v-model:expandedKeys="directory.expandedKeys" v-model:selectedKeys="directory.selectedKeys" show-line
                 :tree-data="directory.treeData">
                 <template #switcherIcon><down-outlined /></template>
                 <template #title="{ key: _key, title }">
@@ -450,6 +452,8 @@ const handleClickBack = () => {
         height: 100vh;
         max-height: 100vh;
         overflow: auto;
+        padding: 4px 4px;
+        box-sizing: border-box;
 
         &::-webkit-scrollbar {
             width: 6px;
@@ -462,7 +466,23 @@ const handleClickBack = () => {
         }
 
         :deep(.ant-tree-switcher-noop) {
+            position: relative;
             display: none;
+
+            &::after{
+                content: '';
+                right:.5em;
+                top:50%;
+                display: block;
+                height: 1em;
+                width: 2px;
+                background-color: #1677ff9a;
+                transform: translateY(-50%);
+                position: absolute;
+            }
+            .anticon {
+                display: none;
+            }
         }
 
         :deep(.toc-container-root) {
