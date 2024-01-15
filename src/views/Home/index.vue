@@ -63,6 +63,7 @@ const initChart = (is: boolean = false) => {
         data.map((item: any) => {
             item['name'] = '🙂' + item.name;
             item['label'] = {
+                position:['50%','50%'],
                 formatter: (v: any) => {
                     return `{text|${v.name}}`
                 },
@@ -87,6 +88,12 @@ const initChart = (is: boolean = false) => {
             {
                 type: 'pie',
                 id: 'pie',
+                // type: 'treemap',
+                leafDepth: 1,
+                nodeClick: false,
+                breadcrumb: {
+                    show: false
+                },
                 label: {
                     fontSize: 14,
                     fontWeight: 600,
@@ -96,8 +103,8 @@ const initChart = (is: boolean = false) => {
                     length: '2%',
                     length2: '1%',
                 },
-                itemStyle:{
-                    borderRadius:6,
+                itemStyle: {
+                    borderRadius: 6,
                     shadowColor: '#1677ff7a',
                     shadowBlur: 4,
                 },
@@ -250,9 +257,11 @@ const handleAnimationEnd = () => {
     0% {
         opacity: 1;
     }
-    80%{
+
+    80% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
     }
