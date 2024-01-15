@@ -464,7 +464,16 @@ const handleClickBack = () => {
             /*滚动条里面小方块*/
             background-color: #1677ff;
         }
-
+        :deep(.ant-tree-title){
+            display: block;
+            height: 100%;
+        }
+        :deep(.ant-tree-node-selected){
+            background-color: #e6f4ff;
+            span{
+                color:#1677ff;
+            }
+        }
         :deep(.ant-tree-switcher-noop) {
             position: relative;
             display: none;
