@@ -216,8 +216,11 @@ const HtagsLinkageDirectoryFn = (_event: Event) => {
         if (scrollPosition >= sectionTop - sectionHeight / 3 &&
             scrollPosition < sectionTop + sectionHeight - sectionHeight / 3) {
             let selectedKey = '#' + node.getAttribute('id');
+            if(directory.value.selectedKeys.includes(selectedKey)) return;
             directory.value.selectedKeys.length = 0;
             directory.value.selectedKeys.push(selectedKey);
+            let url = window.location.origin + window.location.pathname + selectedKey;
+            window.history.replaceState(null,'',url);
             scrollDirectory();
         }
     })
