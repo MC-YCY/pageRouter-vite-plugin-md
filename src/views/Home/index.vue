@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import colors from './colors';
+import {colors,chartTypeConfig} from './config';
 import codeRain from './components/codeRain.vue';
 import { onMounted, ref, onActivated, onDeactivated } from 'vue';
 import * as echarts from 'echarts';
@@ -63,7 +63,7 @@ const computedChartData = (_d: any) => {
     })
 }
 
-let chartType = ref('pie');
+let chartType = ref<string>('pie');
 const handleClickSwitch = () => {
     chartType.value = chartType.value === 'pie' ? 'treemap' : 'pie';
     handleClickSwitchMethods();
@@ -72,64 +72,8 @@ const handleClickSwitchMethods = (_d = []) => {
     let myChart = echarts.getInstanceByDom(chart.value);
     let option_ = JSON.parse(JSON.stringify(myChart?.getOption()))
     let data_ = option_.series[0].data;
-    if(_d && _d.length) data_ = _d;
-    if (chartType.value === 'treemap') {
-        option_.series[0] = {
-            type: 'treemap',
-            data: data_,
-            width: '80%',
-            height: '80%',
-            left: 'center',
-            top: 'middle',
-            id: 'chart',
-            leafDepth: 1,
-            nodeClick: false,
-            breadcrumb: {
-                show: false
-            },
-            label: {
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#888",
-            },
-            roam: true,
-        };
-    } else if (chartType.value === 'pie') {
-        option_.series[0] = {
-            type: 'pie',
-            data: data_,
-            id: 'chart',
-            width: '100%',
-            height: '100%',
-            label: {
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#888",
-            },
-            labelLine: {
-                length: '2%',
-                length2: '1%',
-            },
-            itemStyle: {
-                borderRadius: 6,
-                shadowColor: '#1677ff7a',
-                shadowBlur: 4,
-                borderWidth: 0,
-            },
-            emphasis: {
-                itemStyle: {
-                    color: 'inherit',
-                    shadowBlur: 10,
-                    shadowColor: '#1677ff9a'
-                },
-                label: {
-                    show: true
-                }
-            },
-        };
-    }
-    option_.series[0]['left'] = 'center';
-    option_.series[0]['top'] = 'middle';
+    if (_d && _d.length) data_ = _d;
+    option_.series[0] = {...chartTypeConfig[chartType.value],data:data_}
     myChart?.setOption(option_);
 }
 
@@ -163,37 +107,14 @@ const initChart = (is: boolean = false) => {
             data
         });
     }
+    let optionConfig = chartTypeConfig[chartType.value];
     let option = {
         color: colors,
         series: [
             {
                 type: chartType.value,
                 id: 'chart',
-                label: {
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#888",
-                },
-                labelLine: {
-                    length: '2%',
-                    length2: '1%',
-                },
-                itemStyle: {
-                    borderRadius: 6,
-                    shadowColor: '#1677ff7a',
-                    shadowBlur: 4,
-                    borderWidth: 0,
-                },
-                emphasis: {
-                    itemStyle: {
-                        color: 'inherit',
-                        shadowBlur: 10,
-                        shadowColor: '#1677ff9a'
-                    },
-                    label: {
-                        show: true
-                    }
-                },
+                ...optionConfig,
                 data: data
             }
         ]
@@ -297,6 +218,7 @@ onActivated(() => {
         return;
     }
     let myChart = echarts.getInstanceByDom(chart.value);
+    myChart?.clear();
     myChart?.dispose();
     chart.value.removeAttribute('style');
     chart.value.removeAttribute('_echarts_instance_');

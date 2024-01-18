@@ -244,7 +244,6 @@ const menuToRouterPathStyle = () => {
         nextTick(() => {
             // 根据渲染的 md 文档 dom树计算目录
             markdownBodyToDirectoryFn();
-
         })
     } catch {
         // 如果是通过 😊进入同样设置为 初始表示没有进入过菜单中的某一个
