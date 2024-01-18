@@ -68,13 +68,61 @@ const handleClickSwitch = () => {
     chartType.value = chartType.value === 'pie' ? 'treemap' : 'pie';
     let myChart = echarts.getInstanceByDom(chart.value);
     let option_ = JSON.parse(JSON.stringify(myChart?.getOption()))
-    option_.series[0].type = chartType.value;
+    let data_ = option_.series[0].data;
     if (chartType.value === 'treemap') {
-        option_.series[0]['height'] = '80%';
-        option_.series[0]['width'] = '80%';
+        option_.series[0] = {
+            type: 'treemap',
+            data: data_,
+            width: '80%',
+            height: '80%',
+            left: 'center',
+            top: 'middle',
+            id: 'chart',
+            leafDepth: 1,
+            nodeClick: false,
+            breadcrumb: {
+                show: false
+            },
+            label: {
+                fontSize: 14,
+                fontWeight: 600,
+                color: "#888",
+            },
+            roam: true,
+        };
     } else if (chartType.value === 'pie') {
-        option_.series[0]['height'] = '100%';
-        option_.series[0]['width'] = '100%';
+        option_.series[0] = {
+            type: 'pie',
+            data: data_,
+            id: 'chart',
+            width:'100%',
+            height:'100%',
+            label: {
+                fontSize: 14,
+                fontWeight: 600,
+                color: "#888",
+            },
+            labelLine: {
+                length: '2%',
+                length2: '1%',
+            },
+            itemStyle: {
+                borderRadius: 6,
+                shadowColor: '#1677ff7a',
+                shadowBlur: 4,
+                borderWidth: 0,
+            },
+            emphasis: {
+                itemStyle: {
+                    color: 'inherit',
+                    shadowBlur: 10,
+                    shadowColor: '#1677ff9a'
+                },
+                label: {
+                    show: true
+                }
+            },
+        };
     }
     option_.series[0]['left'] = 'center';
     option_.series[0]['top'] = 'middle';
@@ -115,15 +163,8 @@ const initChart = (is: boolean = false) => {
         color: colors,
         series: [
             {
-                type: 'pie',
+                type: chartType.value,
                 id: 'chart',
-                // type: 'treemap',
-                leafDepth: 1,
-                nodeClick: false,
-                breadcrumb: {
-                    show: false
-                },
-                roam: true,
                 label: {
                     fontSize: 14,
                     fontWeight: 600,
@@ -416,4 +457,5 @@ const handleAnimationEnd = () => {
     position: absolute;
     bottom: 0px;
     z-index: 9999;
-}</style>
+}
+</style>
