@@ -38,10 +38,8 @@
             </router-view>
         </div>
         <div class="toc-container" ref="refDirectory">
-            <a-tree
-            :show-icon="true"
-            v-model:expandedKeys="directory.expandedKeys" v-model:selectedKeys="directory.selectedKeys" show-line
-                :tree-data="directory.treeData">
+            <a-tree :show-icon="true" v-model:expandedKeys="directory.expandedKeys"
+                v-model:selectedKeys="directory.selectedKeys" show-line :tree-data="directory.treeData">
                 <template #switcherIcon><down-outlined /></template>
                 <template #title="{ key: _key, title }">
                     <span :class="processStringConformCss(_key)" @click.stop="handleTreeChange(_key)">
@@ -88,10 +86,6 @@ let loading = ref(true);
 let menusContent: any = ref(null);
 const handleClick = (e: any, is: boolean = false) => {
     if (!is) treeValue.value = undefined;
-    menusContent.value.scrollTop = 0;
-    // directory.value.treeData.length = 0;
-    // directory.value.expandedKeys.length = 0;
-    // directory.value.selectedKeys.length = 0;
     router.replace({
         path: `${props.beginPath}${encodeURI(e.key)}`
     });
@@ -169,7 +163,7 @@ const handleTreeChange = (key: string) => {
         if (!key) return;
         directory.value.selectedKeys.length = 0;
         directory.value.selectedKeys.push(key);
-        window.location.href = route.path + key;
+        window.location.hash = key;
     })
 }
 onUnmounted(() => {
@@ -216,11 +210,11 @@ const HtagsLinkageDirectoryFn = (_event: Event) => {
         if (scrollPosition >= sectionTop - sectionHeight / 3 &&
             scrollPosition < sectionTop + sectionHeight - sectionHeight / 3) {
             let selectedKey = '#' + node.getAttribute('id');
-            if(directory.value.selectedKeys.includes(selectedKey)) return;
+            if (directory.value.selectedKeys.includes(selectedKey)) return;
             directory.value.selectedKeys.length = 0;
             directory.value.selectedKeys.push(selectedKey);
             let url = window.location.origin + window.location.pathname + selectedKey;
-            window.history.replaceState(null,'',url);
+            window.history.replaceState(null, '', url);
             scrollDirectory();
         }
     })
@@ -273,6 +267,11 @@ onMounted(() => {
 })
 router.afterEach((_to, _form, _next) => {
     if (!isInitPage.value && _to.path != '/home') {
+        // 修改hash 触发路由守卫了 这里判断如果 to和form的path一致 则说明是本页面触发
+        if(_to.path != _form.path){
+            menusContent.value.scrollTop = 0;
+            refDirectory.value.scrollTop = 0;
+        }
         menuToRouterPathStyle();
     }
     loading.value = false;
@@ -467,24 +466,28 @@ const handleClickBack = () => {
             /*滚动条里面小方块*/
             background-color: #1677ff;
         }
-        :deep(.ant-tree-title){
+
+        :deep(.ant-tree-title) {
             display: block;
             height: 100%;
         }
-        :deep(.ant-tree-node-selected){
+
+        :deep(.ant-tree-node-selected) {
             background-color: #e6f4ff;
-            span{
-                color:#1677ff;
+
+            span {
+                color: #1677ff;
             }
         }
+
         :deep(.ant-tree-switcher-noop) {
             position: relative;
             display: none;
 
-            &::after{
+            &::after {
                 content: '';
-                right:.5em;
-                top:50%;
+                right: .5em;
+                top: 50%;
                 display: block;
                 height: 1em;
                 width: 2px;
@@ -492,6 +495,7 @@ const handleClickBack = () => {
                 transform: translateY(-50%);
                 position: absolute;
             }
+
             .anticon {
                 display: none;
             }
@@ -532,5 +536,4 @@ const handleClickBack = () => {
         justify-content: center;
         align-items: center;
     }
-}
-</style>
+}</style>
