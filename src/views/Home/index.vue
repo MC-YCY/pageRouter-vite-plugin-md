@@ -52,6 +52,7 @@ const computedDataLabel = (data: any) => {
     })
 }
 computedDataLabel(chartData);
+console.log(JSON.stringify(chartData))
 let pathLog: any = ref([]);
 let isClickType = ref();
 const computedChartData = (_d: any) => {

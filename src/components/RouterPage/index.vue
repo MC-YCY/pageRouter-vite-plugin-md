@@ -469,6 +469,9 @@ const handleClickBack = () => {
         :deep(.ant-tree-title) {
             display: block;
             height: 100%;
+            span{
+                display: block;
+            }
         }
 
         :deep(.ant-tree-node-selected) {
