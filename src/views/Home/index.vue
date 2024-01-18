@@ -66,9 +66,13 @@ const computedChartData = (_d: any) => {
 let chartType = ref('pie');
 const handleClickSwitch = () => {
     chartType.value = chartType.value === 'pie' ? 'treemap' : 'pie';
+    handleClickSwitchMethods();
+}
+const handleClickSwitchMethods = (_d = []) => {
     let myChart = echarts.getInstanceByDom(chart.value);
     let option_ = JSON.parse(JSON.stringify(myChart?.getOption()))
     let data_ = option_.series[0].data;
+    if(_d && _d.length) data_ = _d;
     if (chartType.value === 'treemap') {
         option_.series[0] = {
             type: 'treemap',
@@ -95,8 +99,8 @@ const handleClickSwitch = () => {
             type: 'pie',
             data: data_,
             id: 'chart',
-            width:'100%',
-            height:'100%',
+            width: '100%',
+            height: '100%',
             label: {
                 fontSize: 14,
                 fontWeight: 600,
@@ -262,15 +266,7 @@ const handleGoBack = () => {
     let backDetail = pathLog.value[len - 1 - 1];
     pathLog.value.splice(len - 1, 1);
     const { data } = backDetail;
-    let myChart = echarts.getInstanceByDom(chart.value);
-    myChart?.setOption({
-        series: [
-            {
-                id: 'chart',
-                data
-            }
-        ]
-    })
+    handleClickSwitchMethods(data);
 }
 const handleClickPathItem = (item: any, key: number) => {
     let last = pathLog.value[pathLog.value.length - 1];
@@ -279,15 +275,7 @@ const handleClickPathItem = (item: any, key: number) => {
     };
     if (pathLog.value.length > 1 && item.computedDataLabel_k == last.computedDataLabel_k) return;
     pathLog.value.splice(key + 1, Infinity);
-    let myChart = echarts.getInstanceByDom(chart.value);
-    myChart?.setOption({
-        series: [
-            {
-                id: 'chart',
-                data: item.data
-            }
-        ]
-    })
+    handleClickSwitchMethods(item.data);
 }
 const resizeEcharts = () => {
     let myChart = echarts.getInstanceByDom(chart.value);
