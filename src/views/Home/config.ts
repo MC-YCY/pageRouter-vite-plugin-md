@@ -47,7 +47,7 @@ export  const chartTypeConfig:any = {
             fontWeight: 600,
             color: "#888",
         },
-        roam: true,
+        roam: false,
     }
 }
 
