@@ -4,6 +4,16 @@
             <nav>点击扇形下钻以及跳转页面</nav>
             <nav>点击root层级的🙂label可直接进入</nav>
         </div>
+        <div class="home_switch">
+            <div class="home_switch_box" @click="handleClickSwitch">
+                <div class="home_switch_box_icon" :class="{ home_switch_box_iconShow: chartType == 'pie' }">
+                    <img src="./images/pie.png">
+                </div>
+                <div class="home_switch_box_icon" :class="{ home_switch_box_iconShow: chartType == 'treemap' }">
+                    <img src="./images/areaTree.png">
+                </div>
+            </div>
+        </div>
         <div class="home_path">
             <a-breadcrumb>
                 <a-breadcrumb-item v-for="item, key in pathLog">
@@ -52,6 +62,25 @@ const computedChartData = (_d: any) => {
         }
     })
 }
+
+let chartType = ref('pie');
+const handleClickSwitch = () => {
+    chartType.value = chartType.value === 'pie' ? 'treemap' : 'pie';
+    let myChart = echarts.getInstanceByDom(chart.value);
+    let option_ = JSON.parse(JSON.stringify(myChart?.getOption()))
+    option_.series[0].type = chartType.value;
+    if (chartType.value === 'treemap') {
+        option_.series[0]['height'] = '80%';
+        option_.series[0]['width'] = '80%';
+    } else if (chartType.value === 'pie') {
+        option_.series[0]['height'] = '100%';
+        option_.series[0]['width'] = '100%';
+    }
+    option_.series[0]['left'] = 'center';
+    option_.series[0]['top'] = 'middle';
+    myChart?.setOption(option_);
+}
+
 // is 用来判断 内容页面返回后是否重新渲染
 const initChart = (is: boolean = false) => {
     let myChart = echarts.init(chart.value);
@@ -63,7 +92,7 @@ const initChart = (is: boolean = false) => {
         data.map((item: any) => {
             item['name'] = '🙂' + item.name;
             item['label'] = {
-                position:['50%','50%'],
+                position: ['50%', '50%'],
                 formatter: (v: any) => {
                     return `{text|${v.name}}`
                 },
@@ -87,13 +116,14 @@ const initChart = (is: boolean = false) => {
         series: [
             {
                 type: 'pie',
-                id: 'pie',
+                id: 'chart',
                 // type: 'treemap',
                 leafDepth: 1,
                 nodeClick: false,
                 breadcrumb: {
                     show: false
                 },
+                roam: true,
                 label: {
                     fontSize: 14,
                     fontWeight: 600,
@@ -107,6 +137,7 @@ const initChart = (is: boolean = false) => {
                     borderRadius: 6,
                     shadowColor: '#1677ff7a',
                     shadowBlur: 4,
+                    borderWidth: 0,
                 },
                 emphasis: {
                     itemStyle: {
@@ -169,7 +200,7 @@ const chartEventMethods = (myChart: any) => {
             myChart.setOption({
                 series: [
                     {
-                        id: 'pie',
+                        id: 'chart',
                         data: cdata
                     }
                 ]
@@ -194,7 +225,7 @@ const handleGoBack = () => {
     myChart?.setOption({
         series: [
             {
-                id: 'pie',
+                id: 'chart',
                 data
             }
         ]
@@ -211,7 +242,7 @@ const handleClickPathItem = (item: any, key: number) => {
     myChart?.setOption({
         series: [
             {
-                id: 'pie',
+                id: 'chart',
                 data: item.data
             }
         ]
@@ -276,6 +307,45 @@ const handleAnimationEnd = () => {
         position: absolute;
         left: 0px;
         top: 0px;
+    }
+
+    .home_switch {
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        top: 1em;
+        right: 1em;
+        border-radius: 6px;
+        box-shadow: 0px 0px 8px #1677ff;
+        z-index: 999999;
+        font-size: 14px;
+        background-color: white;
+
+        .home_switch_box {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 6px;
+            overflow: hidden;
+
+            .home_switch_box_icon {
+                position: absolute;
+                z-index: 9;
+                opacity: 0;
+                transition: all .3s ease-in-out;
+                transform: scale(0);
+
+                img {
+                    width: 100%;
+                    display: block;
+                }
+            }
+
+            .home_switch_box_iconShow {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
     }
 
     .home_tip {
@@ -346,5 +416,4 @@ const handleAnimationEnd = () => {
     position: absolute;
     bottom: 0px;
     z-index: 9999;
-}
-</style>
+}</style>
