@@ -14,7 +14,7 @@
                         </span>
                     </a-breadcrumb-item>
                 </a-breadcrumb>
-                <!-- <a-button type="link" :size="'small'" @click="handleGoBack" style="margin-left:10px;">Back</a-button> -->
+                <a-button v-if="false" type="link" :size="'small'" @click="handleGoBack" style="margin-left:10px;">Back</a-button>
             </div>
             <div class="home_switch">
                 <div class="home_switch_box" @click="handleClickSwitch">

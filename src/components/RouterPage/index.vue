@@ -22,8 +22,9 @@
                 </div>
             </div>
             <div class="menus_actions_selects">
-                <a-menu v-model:openKeys="MenuSelect.openKeys" v-model:selectedKeys="MenuSelect.selectedKeys"
-                    style="width:100%" mode="inline" :items="MenuSelect.items" @click="handleClick"></a-menu>
+                <a-menu v-model:openKeys="MenuSelect.openKeys"
+                    v-model:selectedKeys="MenuSelect.selectedKeys" style="width:100%" mode="inline"
+                    :items="MenuSelect.items" @click="handleClick"></a-menu>
             </div>
         </div>
         <div class="example" v-show="loading">
