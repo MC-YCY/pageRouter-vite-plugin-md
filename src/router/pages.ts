@@ -33,7 +33,7 @@ computedDataLabel(Question, 'Question');
 const Home = {
     path: '/home',
     name: 'home',
-    component: () => import('../views/Home/index.vue'),
+    component: () => import('/@/views/Home/index.vue'),
     meta: {
         title: '首页',
         keepAlive: true,
@@ -55,7 +55,7 @@ const StudyRouter = {
 const QuestionRouter = {
     path: '/question',
     name: 'question',
-    component: () => import('../views/Question/index.vue'),
+    component: () => import('/@/views/Question/index.vue'),
     meta: {
         title: '题库',
         name: 'question'
