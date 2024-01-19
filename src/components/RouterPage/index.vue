@@ -259,15 +259,17 @@ onMounted(() => {
     isInitPage.value = false;
     menuToRouterPathStyle();
 
-    // 锚点滚动位置
-    if (!route.hash) return;
-    let sc = menusContent.value.querySelector(route.hash);
-    menusContent.value.scrollTop = sc.getClientRects()[0].top;
+    requestAnimationFrame(() => {
+        // 锚点滚动位置
+        if (!route.hash) return;
+        let sc = menusContent.value.querySelector(route.hash);
+        menusContent.value.scrollTop = sc.getClientRects()[0].top;
+    })
 })
 router.afterEach((_to, _form, _next) => {
     if (!isInitPage.value && _to.path != '/home') {
         // 修改hash 触发路由守卫了 这里判断如果 to和form的path一致 则说明是本页面触发
-        if(_to.path != _form.path){
+        if (_to.path != _form.path) {
             menusContent.value.scrollTop = 0;
             refDirectory.value.scrollTop = 0;
         }
@@ -469,7 +471,8 @@ const handleClickBack = () => {
         :deep(.ant-tree-title) {
             display: block;
             height: 100%;
-            span{
+
+            span {
                 display: block;
             }
         }
@@ -538,4 +541,5 @@ const handleClickBack = () => {
         justify-content: center;
         align-items: center;
     }
-}</style>
+}
+</style>
