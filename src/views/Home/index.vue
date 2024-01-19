@@ -4,25 +4,28 @@
             <nav>点击扇形下钻以及跳转页面</nav>
             <nav>点击root层级的🙂label可直接进入</nav>
         </div>
-        <div class="home_switch">
-            <div class="home_switch_box" @click="handleClickSwitch">
-                <div class="home_switch_box_icon" :class="{ home_switch_box_iconShow: chartType == 'pie' }">
-                    <img src="./images/pie.png">
-                </div>
-                <div class="home_switch_box_icon" :class="{ home_switch_box_iconShow: chartType == 'treemap' }">
-                    <img src="./images/areaTree.png">
+
+        <div class="home_path">
+            <div class="home_path_box">
+                <a-breadcrumb>
+                    <a-breadcrumb-item v-for="item, key in pathLog">
+                        <span class="home_path_box_item" @click="handleClickPathItem(item, key)">
+                            {{ item.path }}
+                        </span>
+                    </a-breadcrumb-item>
+                </a-breadcrumb>
+                <!-- <a-button type="link" :size="'small'" @click="handleGoBack" style="margin-left:10px;">Back</a-button> -->
+            </div>
+            <div class="home_switch">
+                <div class="home_switch_box" @click="handleClickSwitch">
+                    <div class="home_switch_box_icon" :class="{ home_switch_box_iconShow: chartType == 'pie' }">
+                        <img src="./images/pie.png">
+                    </div>
+                    <div class="home_switch_box_icon" :class="{ home_switch_box_iconShow: chartType == 'treemap' }">
+                        <img src="./images/areaTree.png">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="home_path">
-            <a-breadcrumb>
-                <a-breadcrumb-item v-for="item, key in pathLog">
-                    <span class="home_path_item" @click="handleClickPathItem(item, key)">
-                        {{ item.path }}
-                    </span>
-                </a-breadcrumb-item>
-            </a-breadcrumb>
-            <a-button type="link" :size="'small'" @click="handleGoBack" style="margin-left:10px;">Back</a-button>
         </div>
         <div class="chart" ref="chart"></div>
         <codeRain class="home_code"></codeRain>
@@ -30,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import {colors,chartTypeConfig} from './config';
+import { colors, chartTypeConfig } from './config';
 import codeRain from './components/codeRain.vue';
 import { onMounted, ref, onActivated, onDeactivated } from 'vue';
 import * as echarts from 'echarts';
@@ -73,7 +76,7 @@ const handleClickSwitchMethods = (_d = []) => {
     let option_ = JSON.parse(JSON.stringify(myChart?.getOption()))
     let data_ = option_.series[0].data;
     if (_d && _d.length) data_ = _d;
-    option_.series[0] = {...chartTypeConfig[chartType.value],data:data_}
+    option_.series[0] = { ...chartTypeConfig[chartType.value], data: data_ }
     myChart?.setOption(option_);
 }
 
@@ -261,16 +264,14 @@ const handleAnimationEnd = () => {
     }
 
     .home_switch {
-        position: absolute;
         width: 32px;
         height: 32px;
-        top: 1em;
-        right: 1em;
         border-radius: 6px;
         box-shadow: 0px 0px 8px #1677ff;
         z-index: 999999;
         font-size: 14px;
         background-color: white;
+        margin-left: 1em;
 
         .home_switch_box {
             position: relative;
@@ -285,9 +286,14 @@ const handleAnimationEnd = () => {
                 opacity: 0;
                 transition: all .3s ease-in-out;
                 transform: scale(0);
+                display: flex;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
 
                 img {
-                    width: 100%;
+                    width: 80%;
                     display: block;
                 }
             }
@@ -317,39 +323,45 @@ const handleAnimationEnd = () => {
     }
 
     .home_path {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        top: calc(50px - 32px);
         z-index: 999;
-        background-color: white;
-        height: 32px;
-        padding: 0px 6px;
-        border-radius: 6px;
-        box-shadow: 0px 0px 8px #1677ff;
+        top: calc(50px - 32px);
+        display: flex;
+        justify-content: center;
 
-        .home_path_item {
-            vertical-align: top;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all .3s linear;
-            padding: 0px 2px;
-            border-radius: 4px;
-            font-weight: 600;
-            padding-bottom: 2px;
-        }
+        .home_path_box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            height: 32px;
+            padding: 0px 6px;
+            border-radius: 6px;
+            box-shadow: 0px 0px 8px #1677ff;
 
-        .home_path_item:hover {
-            background-color: #f0f0f0;
-        }
+            .home_path_box_item {
+                vertical-align: top;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all .3s linear;
+                padding: 0px 2px;
+                border-radius: 4px;
+                font-weight: 600;
+                padding-bottom: 2px;
+            }
 
-        button {
-            font-weight: 600;
+            .home_path_box_item:hover {
+                background-color: #f0f0f0;
+            }
+
+            button {
+                font-weight: 600;
+            }
         }
     }
+
 
     .home_back {
         position: absolute;
