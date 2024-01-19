@@ -451,7 +451,7 @@ const handleClickBack = () => {
     .toc-container {
         right: 10px;
         top: 50%;
-        min-width: 240px;
+        // min-width: 240px;
         max-width: 240px;
         height: 100vh;
         max-height: 100vh;
