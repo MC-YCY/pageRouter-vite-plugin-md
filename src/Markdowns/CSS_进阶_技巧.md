@@ -680,6 +680,7 @@ height: 100px;
 border: 3px solid #1266f2;
 outline: 3px solid red;
 outline-offset: 10px;
+margin-left:10px;
 }
 </style>
 
