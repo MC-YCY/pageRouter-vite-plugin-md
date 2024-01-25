@@ -137,6 +137,8 @@ const chartEventMethods = (myChart: any) => {
                 routerPath = '/question'
             } else if (text == '🙂知识') {
                 routerPath = '/study'
+            } else if (text == 'echarts'){
+                routerPath = '/echarts'
             }
             router.push({
                 path: routerPath
@@ -179,6 +181,7 @@ const chartEventMethods = (myChart: any) => {
         let routerPath = '/study/' + encodeURI(key);
         if (isClickType.value === '🙂知识') routerPath = '/study/' + encodeURI(key);
         else if (isClickType.value === '🙂面试') routerPath = '/question/' + encodeURI(key);
+        else if (isClickType.value === '🙂echarts') routerPath = '/echarts'
         router.push({
             path: routerPath
         })
