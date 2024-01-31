@@ -1,12 +1,12 @@
 
 <template>
-    <div class="container-main" ref="MainRef" :class="{'isDrag':isDrag}">
+    <div class="container-main" ref="MainRef" :class="{ 'isDrag': isDrag }">
         <div class="container-main-code" ref="rCode">
             <div class="container-main-codeView-header">
                 <div class="RunCode" @click="handleClickRun">运行</div>
             </div>
             <div class="container-main-codeView-content">
-                <codeEditor ref="iediter"></codeEditor>
+                <codeEditor @init="handleInitCode" ref="iediter"></codeEditor>
             </div>
         </div>
         <div class="container-main-move" @mousedown="mouseDown" ref="MoveRef"></div>
@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import codeEditor from './components/codeEditor.vue';
-import { ref,onUnmounted } from 'vue';
+import { ref, onUnmounted } from 'vue';
 let MoveRef = ref();
 let MainRef = ref();
 let startDifMove = ref(0);
@@ -32,22 +32,22 @@ let iediter = ref();
 
 const mouseMove = (event: MouseEvent) => {
     let movex = event.clientX - startDifMove.value;
-    let codePie:number;
-    let viewPie:number;
+    let codePie: number;
+    let viewPie: number;
     let maxWidth = MainRef.value.clientWidth;
-    codePie = ((movex / maxWidth)*100)
+    codePie = ((movex / maxWidth) * 100)
     viewPie = (100 - codePie)
-    if(codePie<10){
+    if (codePie < 10) {
         codePie = 10;
         viewPie = 90;
     }
-    if(viewPie<10){
+    if (viewPie < 10) {
         codePie = 90
         viewPie = 10;
     }
     MoveRef.value.style.left = codePie + '%';
-    rCode.value.style.width = codePie+'%';
-    rView.value.style.width = viewPie+'%';
+    rCode.value.style.width = codePie + '%';
+    rView.value.style.width = viewPie + '%';
     iediter.value.resize();
 }
 const mouseUp = () => {
@@ -62,23 +62,31 @@ const mouseDown = (event: MouseEvent) => {
     window.addEventListener('mouseup', mouseUp);
 }
 
-onUnmounted(()=>{
+onUnmounted(() => {
     mouseUp();
-    document.removeEventListener('visibilitychange',visibilitychangeFun)
+    document.removeEventListener('visibilitychange', visibilitychangeFun)
 })
-const visibilitychangeFun = () =>{
+const visibilitychangeFun = () => {
     let visibilityState = document.visibilityState
-    if(visibilityState=='visible'){
+    if (visibilityState == 'visible') {
         mouseUp();
     }
 }
-document.addEventListener('visibilitychange',visibilitychangeFun)
+document.addEventListener('visibilitychange', visibilitychangeFun)
 
 let Frame = ref();
-const handleClickRun = () =>{
-    console.log(iediter.value.getValue());
-    
-    Frame.value.contentWindow.postMessage({option:["嗨嗨"]},'*')
+const handleClickRun = () => {
+    let codes = iediter.value.getValue();
+    if (codes.trim()) {
+        Frame.value.contentWindow.postMessage({ codes }, '*')
+    }
+}
+const handleInitCode = () => {
+    Frame.value.onload = () => {
+        requestAnimationFrame(() => {
+            handleClickRun();
+        })
+    }
 }
 </script>
 
@@ -88,10 +96,12 @@ const handleClickRun = () =>{
     height: 100vh;
     display: flex;
     position: relative;
-    .container-main-codeView-content{
+
+    .container-main-codeView-content {
         flex: 1;
     }
-    .container-main-codeView-header{
+
+    .container-main-codeView-header {
         width: 100%;
         display: flex;
         box-sizing: border-box;
@@ -100,12 +110,12 @@ const handleClickRun = () =>{
         min-height: calc(12px + 32px);
         max-height: calc(12px + 32px);
 
-        .RunCode{
+        .RunCode {
             height: 32px;
             width: 80px;
             background-color: #1677ff;
             color: #fff;
-            border-radius:6px;
+            border-radius: 6px;
             align-items: center;
             justify-content: center;
             display: flex;
@@ -113,6 +123,7 @@ const handleClickRun = () =>{
             font-size: 14px;
         }
     }
+
     .container-main-code {
         width: 45%;
         height: 100%;
@@ -139,7 +150,8 @@ const handleClickRun = () =>{
         z-index: 60;
         display: flex;
         flex-direction: column;
-        .container-main-view-frame{
+
+        .container-main-view-frame {
             width: 100%;
             height: 100%;
             display: block;
@@ -148,14 +160,14 @@ const handleClickRun = () =>{
         }
     }
 }
-.isDrag::after{
+
+.isDrag::after {
     position: absolute;
     width: 100%;
     height: 100%;
     content: '';
-    left:0;
-    top:0;
+    left: 0;
+    top: 0;
     z-index: 9999;
     cursor: col-resize;
-}
-</style>
+}</style>

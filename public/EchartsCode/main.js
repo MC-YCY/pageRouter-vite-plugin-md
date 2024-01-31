@@ -1,10 +1,22 @@
 let echartsjs = document.querySelector("#echartsjs");
-let container = document.querySelector('.container');
 
-window.addEventListener('message',res=>{
-    console.log(res.data);
-},false)
+window.addEventListener('message', res => {
+    initEchart(res.data.codes)
+}, false)
 
-const initEchart = (option) =>{
+const initEchart = (codes) => {
+    let runCodes = `
+    let container = document.querySelector('.container');
+    myChart = echarts.init(container);
+    ${codes}
+    myChart.setOption(option);
 
+
+    const resizeObserve = new ResizeObserver(() => onResize());
+    const onResize = () => {
+        myChart?.resize();
+    };
+    resizeObserve.observe(container)
+    `
+    eval(runCodes)
 }
