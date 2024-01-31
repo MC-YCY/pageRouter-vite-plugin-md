@@ -1,13 +1,26 @@
 
 <template>
     <div class="container-main" ref="MainRef" :class="{'isDrag':isDrag}">
-        <div class="container-main-code" ref="rCode"></div>
+        <div class="container-main-code" ref="rCode">
+            <div class="container-main-codeView-header">
+                <div class="RunCode" @click="handleClickRun">运行</div>
+            </div>
+            <div class="container-main-codeView-content">
+                <codeEditor ref="iediter"></codeEditor>
+            </div>
+        </div>
         <div class="container-main-move" @mousedown="mouseDown" ref="MoveRef"></div>
-        <div class="container-main-view" ref="rView"></div>
+        <div class="container-main-view" ref="rView">
+            <div class="container-main-codeView-header"></div>
+            <div class="container-main-codeView-content">
+                <iframe src="/EchartsCode/frame.html" ref="Frame" class="container-main-view-frame"></iframe>
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
+import codeEditor from './components/codeEditor.vue';
 import { ref,onUnmounted } from 'vue';
 let MoveRef = ref();
 let MainRef = ref();
@@ -15,6 +28,7 @@ let startDifMove = ref(0);
 let isDrag = ref(false);
 let rCode = ref();
 let rView = ref();
+let iediter = ref();
 
 const mouseMove = (event: MouseEvent) => {
     let movex = event.clientX - startDifMove.value;
@@ -34,6 +48,7 @@ const mouseMove = (event: MouseEvent) => {
     MoveRef.value.style.left = codePie + '%';
     rCode.value.style.width = codePie+'%';
     rView.value.style.width = viewPie+'%';
+    iediter.value.resize();
 }
 const mouseUp = () => {
     window.removeEventListener('mousemove', mouseMove);
@@ -58,6 +73,13 @@ const visibilitychangeFun = () =>{
     }
 }
 document.addEventListener('visibilitychange',visibilitychangeFun)
+
+let Frame = ref();
+const handleClickRun = () =>{
+    console.log(iediter.value.getValue());
+    
+    Frame.value.contentWindow.postMessage({option:["嗨嗨"]},'*')
+}
 </script>
 
 <style lang="less" scoped>
@@ -66,31 +88,64 @@ document.addEventListener('visibilitychange',visibilitychangeFun)
     height: 100vh;
     display: flex;
     position: relative;
+    .container-main-codeView-content{
+        flex: 1;
+    }
+    .container-main-codeView-header{
+        width: 100%;
+        display: flex;
+        box-sizing: border-box;
+        padding: 6px 12px;
+        height: calc(12px + 32px);
+        min-height: calc(12px + 32px);
+        max-height: calc(12px + 32px);
 
+        .RunCode{
+            height: 32px;
+            width: 80px;
+            background-color: #1677ff;
+            color: #fff;
+            border-radius:6px;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    }
     .container-main-code {
-        width: 50%;
+        width: 45%;
         height: 100%;
-        background: #f1f1f1;
         z-index: 60;
+        display: flex;
+        flex-direction: column;
     }
 
     .container-main-move {
         width: 12px;
-        left: 50%;
+        left: 45%;
         height: 100%;
-        background: green;
         position: absolute;
         cursor: col-resize;
         z-index: 999;
+        background-color: #126;
     }
 
     .container-main-view {
-        width: 50%;
+        width: 55%;
         height: 100%;
         padding-left: 12px;
         box-sizing: border-box;
-        background: skyblue;
         z-index: 60;
+        display: flex;
+        flex-direction: column;
+        .container-main-view-frame{
+            width: 100%;
+            height: 100%;
+            display: block;
+            border: none;
+            outline: none;
+        }
     }
 }
 .isDrag::after{
