@@ -220,6 +220,11 @@ defineExpose({
     getValue,
     resize
 })
+window.onresize = () =>{
+    requestAnimationFrame(()=>{
+        resize();
+    })
+}
 </script>
 
 <style lang="less" scoped>
