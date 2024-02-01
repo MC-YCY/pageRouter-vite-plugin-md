@@ -11,9 +11,13 @@
         </div>
         <div class="container-main-move" @mousedown="mouseDown" ref="MoveRef"></div>
         <div class="container-main-view" ref="rView">
-            <div class="container-main-codeView-header"></div>
+            <div class="container-main-codeView-header">
+                <a-select v-model:value="version" style="width: 120px" @change="versionChange">
+                    <a-select-option :value="item" v-for="item in versionOption">{{ item }}</a-select-option>
+                </a-select>
+            </div>
             <div class="container-main-codeView-content">
-                <iframe src="/EchartsCode/frame.html" ref="Frame" class="container-main-view-frame"></iframe>
+                <iframe :src="iframeSrc" ref="Frame" class="container-main-view-frame"></iframe>
             </div>
         </div>
     </div>
@@ -21,6 +25,7 @@
 
 <script lang="ts" setup>
 import codeEditor from './components/codeEditor.vue';
+import { getEchartsLibraries } from './api/index'
 import { ref, onUnmounted } from 'vue';
 let MoveRef = ref();
 let MainRef = ref();
@@ -83,11 +88,32 @@ const handleClickRun = () => {
     }
 }
 const handleInitCode = () => {
+    getVersionOption();
     Frame.value.onload = () => {
         requestAnimationFrame(() => {
             handleClickRun();
         })
     }
+}
+
+let baseSrc = `/EchartsCode/frame.html`
+let iframeSrc = ref(baseSrc)
+
+let version = ref();
+let versionOption = ref([]);
+const getVersionOption = () => {
+    getEchartsLibraries().then(res => {
+        const data = res.data;
+        version.value = data.version;
+        versionOption.value = data.versions.filter((v: string) => {
+            return parseInt(v) >= 4
+        }).reverse()
+        versionChange()
+    })
+}
+const versionChange = () => {
+    iframeSrc.value = baseSrc + '?version=' + version.value
+    handleClickRun();
 }
 </script>
 
@@ -100,6 +126,7 @@ const handleInitCode = () => {
 
     .container-main-codeView-content {
         flex: 1;
+        height: 0px;
     }
 
     .container-main-codeView-header {
@@ -171,4 +198,5 @@ const handleInitCode = () => {
     top: 0;
     z-index: 9999;
     cursor: col-resize;
-}</style>
+}
+</style>

@@ -12,6 +12,7 @@
     "@ant-design/icons-vue": "^7.0.1",
     "@yankeeinlondon/code-builder": "^1.2.1",
     "ant-design-vue": "^4.0.8",
+    "axios": "^1.6.7",
     "echarts": "^5.4.3",
     "less": "^4.2.0",
     "less-loader": "^11.1.4",
