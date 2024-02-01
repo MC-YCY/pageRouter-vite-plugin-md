@@ -1,31 +1,39 @@
 
-window.addEventListener('message', res => {
-    initEchart(res.data.codes)
-}, false)
-
+let messageData = {};
 const handleQuery = (query) => {
     let queryObj = {}
     if (query) {
-      query.split('&').forEach((item) => {
-        let arr = item.split('=')
-        queryObj[arr[0]] = arr[1]
-      })
+        query.split('&').forEach((item) => {
+            let arr = item.split('=')
+            queryObj[arr[0]] = arr[1]
+        })
     }
     return queryObj
-  }
-const URLDATA = window.document.location.href.split('?')[1]
+}
+const URLDATA = window.location.href.split('?')[1]
 const AllParams = handleQuery(URLDATA);
 
-const setVersionEchart = () =>{
+const setVersionEchart = () => {
     let version = AllParams.version;
-    if(!version) return;
+    if (!version) return;
     let echartsjs = document.querySelector("#echartsjs");
+    document.body.removeChild(echartsjs);
+    let script = document.createElement('script');
+    script.setAttribute('id', 'echartsjs')
     let cdn = `https://cdn.staticfile.org/echarts/${version}/echarts.min.js`
-    echartsjs.src = cdn;
+    script.src = cdn;
+    script.onload = () => {
+        window.addEventListener('message', res => {
+            messageData = res.data;
+            initEchart()
+        }, false)
+    }
+    document.body.appendChild(script)
 }
 setVersionEchart();
 
-const initEchart = (codes) => {
+const initEchart = () => {
+    let codes = messageData.codes;
     let runCodes = `
     let container = document.querySelector('.container');
     myChart = echarts.init(container);
@@ -38,10 +46,5 @@ const initEchart = (codes) => {
     }
     `
     const codesDom = document.querySelector('#codes');
-    if(codesDom.textContent){
-        codesDom.textContent = null;
-        window.location.reload();
-    }else{
-        codesDom.textContent = runCodes;
-    }
+    codesDom.textContent = runCodes;
 }
