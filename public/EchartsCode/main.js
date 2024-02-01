@@ -29,6 +29,7 @@ const initEchart = (codes) => {
     let runCodes = `
     let container = document.querySelector('.container');
     myChart = echarts.init(container);
+    myChart.clear();
     ${codes}
     myChart.setOption(option);
     myChart.resize();
@@ -36,6 +37,11 @@ const initEchart = (codes) => {
         myChart.resize();
     }
     `
-    const codesDom = document.querySelector('#codes')
-    codesDom.textContent = runCodes;
+    const codesDom = document.querySelector('#codes');
+    if(codesDom.textContent){
+        codesDom.textContent = null;
+        window.location.reload();
+    }else{
+        codesDom.textContent = runCodes;
+    }
 }

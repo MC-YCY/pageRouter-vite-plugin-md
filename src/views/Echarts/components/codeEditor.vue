@@ -26,8 +26,8 @@ let data = {
       50, 10, 15, 20, 25, 30
    ],
 }
-let data1Max = data.develop.sort((a, b) => b - a)[0];
-let data2Max = data.complaint.sort((a, b) => b - a)[0];
+// let data1Max = data.develop.sort((a, b) => b - a)[0];
+// let data2Max = data.complaint.sort((a, b) => b - a)[0];
 
 let valueAxis = [
    {

@@ -87,8 +87,8 @@ const handleClickRun = () => {
         Frame.value.contentWindow.postMessage({ codes }, '*')
     }
 }
-const handleInitCode = () => {
-    getVersionOption();
+const handleInitCode = async () => {
+    await getVersionOption()
     Frame.value.onload = () => {
         requestAnimationFrame(() => {
             handleClickRun();
@@ -102,17 +102,17 @@ let iframeSrc = ref(baseSrc)
 let version = ref();
 let versionOption = ref([]);
 const getVersionOption = () => {
-    getEchartsLibraries().then(res => {
+    return getEchartsLibraries().then(res => {
         const data = res.data;
         version.value = data.version;
         versionOption.value = data.versions.filter((v: string) => {
-            return parseInt(v) >= 4
+            return parseInt(v) >= 3
         }).reverse()
         versionChange()
     })
 }
 const versionChange = () => {
-    iframeSrc.value = baseSrc + '?version=' + version.value
+    iframeSrc.value = baseSrc + '?version=' + version.value;
     handleClickRun();
 }
 </script>
