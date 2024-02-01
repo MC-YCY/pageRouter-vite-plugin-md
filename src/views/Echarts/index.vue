@@ -16,8 +16,8 @@
                     <a-select-option :value="item" v-for="item in versionOption">{{ item }}</a-select-option>
                 </a-select>
             </div>
-            <div class="container-main-codeView-content">
-                <iframe :src="iframeSrc" ref="Frame" class="container-main-view-frame"></iframe>
+            <div class="container-main-codeView-content" ref="frameContent">
+                <iframe :src="iframeSrc" id="Frame" class="container-main-view-frame"></iframe>
             </div>
         </div>
     </div>
@@ -54,7 +54,6 @@ const mouseMove = (event: MouseEvent) => {
     rCode.value.style.width = codePie + '%';
     rView.value.style.width = viewPie + '%';
     iediter.value.resize();
-    handleClickRun()
 }
 const mouseUp = () => {
     window.removeEventListener('mousemove', mouseMove);
@@ -80,20 +79,25 @@ const visibilitychangeFun = () => {
 }
 document.addEventListener('visibilitychange', visibilitychangeFun)
 
-let Frame = ref();
+let frameContent = ref();
 const handleClickRun = () => {
-    let codes = iediter.value.getValue();
-    if (codes.trim()) {
-        Frame.value.contentWindow.postMessage({ codes }, '*')
+    let Frame_:HTMLElement | null = document.querySelector("#Frame");
+    frameContent.value.removeChild(Frame_);
+    let newFrame:HTMLIFrameElement | any = document.createElement('iframe');
+    newFrame.src = iframeSrc.value;
+    newFrame.setAttribute('class', 'container-main-view-frame')
+    newFrame.setAttribute('id', 'Frame')
+    frameContent.value.appendChild(newFrame);
+    newFrame.onload = () => {
+        let codes = iediter.value.getValue();
+        if (codes.trim()) {
+            newFrame.contentWindow.postMessage({ codes }, '*')
+        }
     }
 }
 const handleInitCode = async () => {
     await getVersionOption()
-    Frame.value.onload = () => {
-        requestAnimationFrame(() => {
-            handleClickRun();
-        })
-    }
+    handleClickRun();
 }
 
 let baseSrc = `/EchartsCode/frame.html`
@@ -179,7 +183,7 @@ const versionChange = () => {
         display: flex;
         flex-direction: column;
 
-        .container-main-view-frame {
+        :deep(.container-main-view-frame) {
             width: 100%;
             height: 100%;
             display: block;

@@ -1,4 +1,3 @@
-
 let messageData = {};
 const handleQuery = (query) => {
     let queryObj = {}
@@ -19,16 +18,17 @@ const setVersionEchart = () => {
     let echartsjs = document.querySelector("#echartsjs");
     document.body.removeChild(echartsjs);
     let script = document.createElement('script');
-    script.setAttribute('id', 'echartsjs')
+    script.setAttribute('id', 'echartsjs');
     let cdn = `https://cdn.staticfile.org/echarts/${version}/echarts.min.js`
     script.src = cdn;
+    document.body.appendChild(script);
     script.onload = () => {
         window.addEventListener('message', res => {
+            console.log(res);
             messageData = res.data;
             initEchart()
         }, false)
     }
-    document.body.appendChild(script)
 }
 setVersionEchart();
 
