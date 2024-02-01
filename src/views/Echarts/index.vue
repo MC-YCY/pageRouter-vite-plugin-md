@@ -49,6 +49,7 @@ const mouseMove = (event: MouseEvent) => {
     rCode.value.style.width = codePie + '%';
     rView.value.style.width = viewPie + '%';
     iediter.value.resize();
+    handleClickRun()
 }
 const mouseUp = () => {
     window.removeEventListener('mousemove', mouseMove);

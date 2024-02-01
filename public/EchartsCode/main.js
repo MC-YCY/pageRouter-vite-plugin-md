@@ -10,13 +10,7 @@ const initEchart = (codes) => {
     myChart = echarts.init(container);
     ${codes}
     myChart.setOption(option);
-
-
-    const resizeObserve = new ResizeObserver(() => onResize());
-    const onResize = () => {
-        myChart?.resize();
-    };
-    resizeObserve.observe(container)
+    myChart.resize();
     `
     eval(runCodes)
 }
