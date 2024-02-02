@@ -185,7 +185,7 @@ myChart.getZr().on('click', (e) => {
 const initEditor = () => {
     instance.value = monaco.editor.create(editor.value, {
         value: defaultCode,
-        language: 'javascript'
+        language: 'javascript',
     });
     emits('init',getValue())
 }
