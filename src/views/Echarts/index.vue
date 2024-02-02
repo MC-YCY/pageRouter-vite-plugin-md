@@ -141,6 +141,9 @@ const versionChange = () => {
         height: calc(12px + 32px);
         min-height: calc(12px + 32px);
         max-height: calc(12px + 32px);
+        background-color: #fff;
+        box-shadow: 0px 1px 4px #1677ff8a;
+        z-index: 9999;
 
         .RunCode {
             height: 32px;
@@ -171,7 +174,7 @@ const versionChange = () => {
         position: absolute;
         cursor: col-resize;
         z-index: 999;
-        background-color: #126;
+        background-color: #f1f1f1;
     }
 
     .container-main-view {

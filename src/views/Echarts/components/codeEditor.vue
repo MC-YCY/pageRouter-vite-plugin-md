@@ -26,13 +26,10 @@ let data = {
       50, 10, 15, 20, 25, 30
    ],
 }
-// let data1Max = data.develop.sort((a, b) => b - a)[0];
-// let data2Max = data.complaint.sort((a, b) => b - a)[0];
 
 let valueAxis = [
    {
       type: 'value',
-      // max:data1Max,
       splitNumber: 10,      //分割段数 就是展示 10个 y的label刻度值
       splitLine: {
          show: true,
@@ -50,7 +47,6 @@ let valueAxis = [
    },
    {
       type: 'value',
-      // max:data2Max,
       splitNumber: 10,
       axisLine: {
          show: false
@@ -180,7 +176,7 @@ let orientMap = {
 }
 
 myChart.getZr().on('click', (e) => {
-   let flat = e.topTarget.parent.style.text == '{switchIcon|}';
+   let flat = e.topTarget?.parent?.style?.text == '{switchIcon|}';
    if (flat) {
       orient = orientMap[orient]
       orientOfData(orient)
