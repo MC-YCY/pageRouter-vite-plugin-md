@@ -77,6 +77,8 @@ export default defineConfig({
       less: {
         javascriptEnabled: true,
       },
+      scss: {
+      }
     },
   },
 })

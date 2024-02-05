@@ -28,6 +28,7 @@
   "devDependencies": {
     "@types/node": "^20.10.6",
     "@vitejs/plugin-vue": "^4.1.0",
+    "sass": "^1.70.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.2",
     "unplugin-vue-components": "^0.26.0",
