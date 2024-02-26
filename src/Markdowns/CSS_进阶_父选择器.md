@@ -251,3 +251,61 @@ form:has(input:focused) {
     justify-content: space-between;
 }
 ```
+
+### 3. 过滤组件
+有一个具有多个选项的组件，当它们没有被选中时，不显示重置按钮。当选中其中一个选项时，显示重置按钮。
+
+![w100%](./images/CSS_进阶_父选择器/demo3.png)
+
+可以使用 `:has`选择器轻松实现这个功能：
+```css
+.btn-reset {
+    display: none;
+}
+
+.multiselect:has(input:checked) .btn-reset {
+    display: block;
+}
+```
+
+### 4. 显示或隐藏表单元素
+有时可能需要根据之前的选择来显示特定的表单字段。 在下面的例子中，当下拉框选中“other”字段时，就展示 other reason 输入框：
+
+![w100%](./images/CSS_进阶_父选择器/demo4.png)
+
+使用 CSS `:has` 选择器就可以检查选择菜单是否选择了 other 字段，并在此基础上显示 other reason 输入框：
+```css
+.other-field {
+    display: block;
+}
+
+form:has(option[value="other"]:checked) .other-field {
+    display: block;
+}
+```
+
+### 5. 导航栏
+有一个带有子菜单的导航栏，当鼠标悬停在菜单项上时展示子菜单：
+
+![w100%](./images/CSS_进阶_父选择器/demo5.png)
+
+我们需要做的就是根据是否展示子菜单来显示或隐藏右侧的箭头。可以使用`:has` 选择器轻松实现这一点，这里只需检查`li`元素中是否包含`ul`即可：
+```css
+li:has(ul) > a:after {
+    content: "";
+}
+```
+
+### 6. 强制警报
+在某些仪表板中，可能需要用户必须注意重要警报。在这种情况下，拥有页内警报可能还不够。例如，在这种情况下，可能会为标题元素添加红色边框和暗红色背景色。这样会增加用户快速注意到警报的可能性。 
+
+![w100%](./images/CSS_进阶_父选择器/demo6.png)
+
+CSS `:has` 就可以检查`.main`元素是否有警报。如果有，将以下样式添加到标题中：
+```css
+.main:has(.alert) .header {
+    border-top: 2px solid red;
+    background-color: #fff4f4;
+}
+```
+
