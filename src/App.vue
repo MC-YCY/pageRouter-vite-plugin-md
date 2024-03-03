@@ -1,6 +1,6 @@
 <template>
   <a-config-provider ref="configProvider" :theme="{
-        algorithm: theme.defaultAlgorithm ,
+    algorithm: theme.defaultAlgorithm,
   }">
     <router-view v-slot="{ Component }">
       <keep-alive>
@@ -15,8 +15,8 @@
 import { useRoute } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { theme } from 'ant-design-vue';
-const {useToken } = theme;
-const {token} = useToken();
+const { useToken } = theme;
+const { token } = useToken();
 const route = useRoute();
 let configProvider = ref();
 onMounted(() => {

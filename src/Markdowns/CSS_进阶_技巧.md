@@ -1,5 +1,5 @@
 # 技巧
-
+> 虽是技巧，但是版本兼容较高；用前先查看
 ## 图像填充文字效果
 要想实现图像填充文字效果，可以设置 `background-clip: text` 以使文字背景作为整个区域的背景，文字之外的区域将被裁掉。配合透明的文字颜色，就可以实现图像填充文字效果了：
 <div class='jq_div'>世界很美好感谢有你</div>
@@ -55,7 +55,7 @@ font-weight:800;
 
 使用 `:paused` 伪类可以为处于暂停状态的媒体元素设置样式，那自然就还有 `:playing` 伪类，它可以为处于播放状态的媒体元素设置样式。
 
-<video class='videoDemo' src='https://v1.kwaicdn.com/upic/2023/11/08/18/BMjAyMzExMDgxODAyMzVfMjE2Mjk2NjM3Ml8xMTY3MzY3NTM0MTFfMV8z_hd15_Bd0eba63f4a347f10edcb24166e4db4ac.mp4?pkey=AAWExHz9UMkXxhoP2CCXv6_kwfzXELVa1DlKSlaBqsENVxYaifM3fY4M6WId8HyZXk4mhIujqjr69-PVIVSTYyuhCFjvkBPbpfgWkzTs-Jcwd5qwW_5ZeEn2q-XxbkMSB5g&tag=1-1706063982-unknown-0-sswhxfx1v3-8c14d0efebb1f928&clientCacheKey=3xrz2cundmgab79_hd15.mp4&di=9d77aeae&bp=10004&tt=hd15&ss=vp' controls width='240'></video>
+<video class='videoDemo' src='./images/CSS_进阶_技巧/MP4.mp4' controls width='240'></video>
 <style>
 .videoDemo:paused {
   opacity: 0.6;
@@ -680,6 +680,7 @@ height: 100px;
 border: 3px solid #1266f2;
 outline: 3px solid red;
 outline-offset: 10px;
+margin-left:10px;
 }
 </style>
 

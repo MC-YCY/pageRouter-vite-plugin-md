@@ -4,8 +4,8 @@ let QuestionPages: any = [];
 // 咱也不懂，用vue2的动态()=>import 抱有警告
 // 该这种方式
 const modules = import.meta.glob("../Markdowns/**.md");
-const importModule = (_path:string) =>{
-    let path = '../Markdowns/'+_path
+const importModule = (_path: string) => {
+    let path = '../Markdowns/' + _path
     return modules[path];
 }
 const computedDataLabel = (data: any, t: string) => {
@@ -60,11 +60,24 @@ const QuestionRouter = {
         title: '题库',
         name: 'question'
     },
-    children:QuestionPages
+    children: QuestionPages
 }
+
+const EchartsRouter = {
+    path: '/echarts',
+    name: 'echarts',
+    component: () => import('/@/views/Echarts/index.vue'),
+    meta: {
+        title: 'echarts',
+        name: 'echarts'
+    },
+    children:[]
+}
+
 
 export const basicRoutes = [
     Home,
     StudyRouter,
-    QuestionRouter
+    QuestionRouter,
+    EchartsRouter
 ]

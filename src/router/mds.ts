@@ -1200,6 +1200,16 @@ export const _Question = [
 ]
 computedDataLabel(_Question);
 export const Question = _Question;
+
+
+export const Echarts = [
+    {
+        name: 'echarts',
+        routerKey:'echarts',
+        children: []
+    },
+]
+
 export const chartData = [
     {
         name: '知识',
@@ -1210,5 +1220,10 @@ export const chartData = [
         name: '面试',
         routerKey:'面试',
         children: Question
+    },
+    {
+        name:'echarts',
+        routerKey:'echarts',
+        isVue:true,
     }
 ]

@@ -24,7 +24,7 @@ function pathResolve(dir: string) {
 // 讲 字符出 通过encodeURI 转义后 字符串 处理为符合css选择器命名标准的字符串
 // 采用讲 # 去掉 % 
 // 后面内容滚动 采用此函数获取dom Rect信息
-const processStringConformCss = (inputString:string) => {
+const processStringConformCss = (inputString: string) => {
   // 去掉开头的#
   let step1 = inputString.replace(/^#/, '');
   // 将%转换为_
@@ -32,6 +32,9 @@ const processStringConformCss = (inputString:string) => {
   let result = step12.replace(/[^a-zA-Z0-9_]/g, '').replace(/^[^a-zA-Z]+/, '');
   return result;
 }
+
+
+const prefix = 'monaco-editor/esm/vs'
 export default defineConfig({
   plugins: [
     vue({
@@ -45,9 +48,11 @@ export default defineConfig({
         typographer: true,
       },
       markdownItSetup(md) {
-        md.use(mita, { permalink: true, permalinkBefore: true, permalinkSymbol: '#' ,slugify:(e)=>{
-          return processStringConformCss(encodeURI(e))
-        }})
+        md.use(mita, {
+          permalink: true, permalinkBefore: true, permalinkSymbol: '#', slugify: (e) => {
+            return processStringConformCss(encodeURI(e))
+          }
+        })
         md.use(mitp);
       },
     }),
@@ -72,6 +77,8 @@ export default defineConfig({
       less: {
         javascriptEnabled: true,
       },
+      scss: {
+      }
     },
   },
 })
